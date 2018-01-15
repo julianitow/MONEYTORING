@@ -311,3 +311,4 @@ class Utilisateur
         return $this->admin;
     }
 }
+
