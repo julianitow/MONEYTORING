@@ -1,5 +1,5 @@
 application_homepage:
-    path:     /index
+    path:     /
     defaults: { _controller: ApplicationBundle:Default:index }
 
 application_homepage:
