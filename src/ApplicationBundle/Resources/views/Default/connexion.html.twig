@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {% extends '@Application/Default/index.html.twig' %}
 
 {% block body %}
@@ -10,3 +11,12 @@
 
     {{ utilisateur.email }}
 {%  endblock %}
+=======
+<h1>Utilisateur :</h1>
+<p><b>Email : </p></b>{{ utilisateur.email }}</p>
+<p><b>Mot de passe : </p></b>{{ utilisateur.MotDePasse }}</p>
+
+{{ form_start(form) }}
+{{ form_widget(form) }}
+{{ form_end(form) }}
+>>>>>>> a61ddb97dd130aa947a2f6244cd4130cf6324a0f

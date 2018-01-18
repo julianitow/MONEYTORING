@@ -4,7 +4,11 @@ namespace ApplicationBundle\Controller;
 
 use ApplicationBundle\Entity\Utilisateur;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+
 use Symfony\Component\Form\Extension\Core\Type\FormType;
+=======
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+>>>>>>> a61ddb97dd130aa947a2f6244cd4130cf6324a0f
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
