@@ -1,0 +1,12 @@
+{% extends '@Application/Default/index.html.twig' %}
+
+{% block body %}
+
+<h1>Connexion</h1>
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+
+    {{ utilisateur.email }}
+{%  endblock %}
