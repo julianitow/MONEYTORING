@@ -1,0 +1,16 @@
+{% extends "@Application/Default/template.html.twig" %}
+{% block body %}
+
+    <div class="container">
+        <div class="form-signin" id="form">
+            <h1> <center>MONEYTORING</center></h1>
+            <img src >
+            <h2 class="form-signin-heading">Connexion</h2>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+
+            {{ utilisateur.email }}
+        </div>
+    </div>
+{%  endblock %}
