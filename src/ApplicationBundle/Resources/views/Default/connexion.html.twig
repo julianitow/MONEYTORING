@@ -1,22 +1,16 @@
-<<<<<<< HEAD
-{% extends '@Application/Default/index.html.twig' %}
-
+{% extends "@Application/Default/template.html.twig" %}
 {% block body %}
 
-<h1>Connexion</h1>
+    <div class="container">
+        <div class="form-signin" id="form">
+            <h1> <center>MONEYTORING</center></h1>
+            <img src >
+            <h2 class="form-signin-heading">Connexion</h2>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
 
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    {{ form_end(form) }}
-
-    {{ utilisateur.email }}
+            {{ utilisateur.email }}
+        </div>
+    </div>
 {%  endblock %}
-=======
-<h1>Utilisateur :</h1>
-<p><b>Email : </p></b>{{ utilisateur.email }}</p>
-<p><b>Mot de passe : </p></b>{{ utilisateur.MotDePasse }}</p>
-
-{{ form_start(form) }}
-{{ form_widget(form) }}
-{{ form_end(form) }}
->>>>>>> a61ddb97dd130aa947a2f6244cd4130cf6324a0f
