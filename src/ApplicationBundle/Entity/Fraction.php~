@@ -161,28 +161,5 @@ class Fraction
     {
         return $this->priorite;
     }
-
-    /**
-     * Set utilisateur
-     *
-     * @param \ApplicationBundle\Entity\Utilisateur $utilisateur
-     *
-     * @return Fraction
-     */
-    public function setUtilisateur(\ApplicationBundle\Entity\Utilisateur $utilisateur = null)
-    {
-        $this->utilisateur = $utilisateur;
-
-        return $this;
-    }
-
-    /**
-     * Get utilisateur
-     *
-     * @return \ApplicationBundle\Entity\Utilisateur
-     */
-    public function getUtilisateur()
-    {
-        return $this->utilisateur;
-    }
 }
+

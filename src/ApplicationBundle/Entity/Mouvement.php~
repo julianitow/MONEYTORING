@@ -5,12 +5,12 @@ namespace ApplicationBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * fraction
+ * Mouvement
  *
- * @ORM\Table(name="fraction")
- * @ORM\Entity(repositoryClass="ApplicationBundle\Repository\fractionRepository")
+ * @ORM\Table(name="mouvement")
+ * @ORM\Entity(repositoryClass="ApplicationBundle\Repository\MouvementRepository")
  */
-class Fraction
+class Mouvement
 {
     /**
      * @var int
@@ -24,7 +24,7 @@ class Fraction
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string", length=50, unique=true)
+     * @ORM\Column(name="nom", type="string", length=50)
      */
     private $nom;
 
@@ -38,23 +38,30 @@ class Fraction
     /**
      * @var string
      *
-     * @ORM\Column(name="couleur", type="string", length=30)
+     * @ORM\Column(name="type", type="string", length=50)
      */
-    private $couleur;
+    private $type;
 
     /**
-     * @var int
+     * @var \DateTime
      *
-     * @ORM\Column(name="priorite", type="integer")
+     * @ORM\Column(name="date", type="date")
      */
-    private $priorite;
+    private $date;
 
     /**
-     * @var Utilisateur
+     * @var string
      *
-     * @ORM\ManyToOne(targetEntity="ApplicationBundle\Entity\Utilisateur")
+     * @ORM\Column(name="recursif", type="string", length=50)
      */
-    private $utilisateur;
+    private $recursif;
+
+    /**
+     * @var fraction
+     *
+     * @ORM\ManyToOne(targetEntity="ApplicationBundle\Entity\Fraction")
+     */
+    private $fraction;
 
     /**
      * Get id
@@ -71,7 +78,7 @@ class Fraction
      *
      * @param string $nom
      *
-     * @return fraction
+     * @return Mouvement
      */
     public function setNom($nom)
     {
@@ -95,7 +102,7 @@ class Fraction
      *
      * @param integer $montant
      *
-     * @return fraction
+     * @return Mouvement
      */
     public function setMontant($montant)
     {
@@ -115,74 +122,75 @@ class Fraction
     }
 
     /**
-     * Set couleur
+     * Set type
      *
-     * @param string $couleur
+     * @param string $type
      *
-     * @return fraction
+     * @return Mouvement
      */
-    public function setCouleur($couleur)
+    public function setType($type)
     {
-        $this->couleur = $couleur;
+        $this->type = $type;
 
         return $this;
     }
 
     /**
-     * Get couleur
+     * Get type
      *
      * @return string
      */
-    public function getCouleur()
+    public function getType()
     {
-        return $this->couleur;
+        return $this->type;
     }
 
     /**
-     * Set priorite
+     * Set date
      *
-     * @param integer $priorite
+     * @param \DateTime $date
      *
-     * @return fraction
+     * @return Mouvement
      */
-    public function setPriorite($priorite)
+    public function setDate($date)
     {
-        $this->priorite = $priorite;
+        $this->date = $date;
 
         return $this;
     }
 
     /**
-     * Get priorite
+     * Get date
      *
-     * @return int
+     * @return \DateTime
      */
-    public function getPriorite()
+    public function getDate()
     {
-        return $this->priorite;
+        return $this->date;
     }
 
     /**
-     * Set utilisateur
+     * Set recursif
      *
-     * @param \ApplicationBundle\Entity\Utilisateur $utilisateur
+     * @param string $recursif
      *
-     * @return Fraction
+     * @return Mouvement
      */
-    public function setUtilisateur(\ApplicationBundle\Entity\Utilisateur $utilisateur = null)
+    public function setRecursif($recursif)
     {
-        $this->utilisateur = $utilisateur;
+        $this->recursif = $recursif;
 
         return $this;
     }
 
     /**
-     * Get utilisateur
+     * Get recursif
      *
-     * @return \ApplicationBundle\Entity\Utilisateur
+     * @return string
      */
-    public function getUtilisateur()
+    public function getRecursif()
     {
-        return $this->utilisateur;
+        return $this->recursif;
     }
 }
+

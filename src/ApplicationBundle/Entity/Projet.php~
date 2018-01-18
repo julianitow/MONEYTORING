@@ -161,28 +161,5 @@ class Projet
     {
         return $this->montant;
     }
-
-    /**
-     * Set utlisateur
-     *
-     * @param \ApplicationBundle\Entity\Utilisateur $utlisateur
-     *
-     * @return Projet
-     */
-    public function setUtlisateur(\ApplicationBundle\Entity\Utilisateur $utlisateur = null)
-    {
-        $this->utlisateur = $utlisateur;
-
-        return $this;
-    }
-
-    /**
-     * Get utlisateur
-     *
-     * @return \ApplicationBundle\Entity\Utilisateur
-     */
-    public function getUtlisateur()
-    {
-        return $this->utlisateur;
-    }
 }
+

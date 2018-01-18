@@ -56,6 +56,12 @@ class Mouvement
      */
     private $recursif;
 
+    /**
+     * @var fraction
+     *
+     * @ORM\ManyToOne(targetEntity="ApplicationBundle\Entity\Fraction")
+     */
+    private $fraction;
 
     /**
      * Get id
@@ -186,5 +192,28 @@ class Mouvement
     {
         return $this->recursif;
     }
-}
 
+    /**
+     * Set fraction
+     *
+     * @param \ApplicationBundle\Entity\Fraction $fraction
+     *
+     * @return Mouvement
+     */
+    public function setFraction(\ApplicationBundle\Entity\Fraction $fraction = null)
+    {
+        $this->fraction = $fraction;
+
+        return $this;
+    }
+
+    /**
+     * Get fraction
+     *
+     * @return \ApplicationBundle\Entity\Fraction
+     */
+    public function getFraction()
+    {
+        return $this->fraction;
+    }
+}
