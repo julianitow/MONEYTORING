@@ -2,7 +2,12 @@
 
 namespace ApplicationBundle\Controller;
 
+use ApplicationBundle\Entity\Utilisateur;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -10,17 +15,28 @@ class DefaultController extends Controller
     {
         return $this->render('@Application/Default/index.html.twig');
     }
-    public function connexionAction($email, $mdp)
+    public function connexionAction(Request $request)
     {
         $utilisateur = new Utilisateur();
-        $utilisateur->setUtilisateur('Caca boudin');
+        $utilisateur->setEmail('Entrer email');
+        $utilisateur->setMotDePasse('mot de passe');
 
-        $form = $this->createFormBuilder($task)
-            ->add('task', TextType::class)
-            ->add('dueDate', DateType::class)
-            ->add('save', SubmitType::class, array('label' => 'Create Task'))
+        $form = $this->createFormBuilder($utilisateur)
+            ->add('email', TextType::class)
+            ->add('MotDePasse', PasswordType::class)
+            ->add('Connexion', SubmitType::class, array('label' => 'Se connecter'))
             ->getForm();
 
-        return $this->render('@Application/Default/connexion.html.twig');
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $utilisateur = $form->getData();
+
+        }
+
+        return $this->render('@Application/Default/connexion.html.twig', [
+            'form'=>$form->createView(),
+            'utilisateur'=>$utilisateur,
+        ]);
     }
 }
