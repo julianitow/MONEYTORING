@@ -50,11 +50,11 @@ class Mouvement
     private $date;
 
     /**
-     * @var string
+     * @var recurrence
      *
-     * @ORM\Column(name="recursif", type="string", length=50)
+     * @ORM\ManyToOne(targetEntity="ApplicationBundle/Recurrence")
      */
-    private $recursif;
+    private $recurrence;
 
     /**
      * @var fraction
@@ -170,27 +170,26 @@ class Mouvement
     }
 
     /**
-     * Set recursif
+     * Set fraction
      *
-     * @param string $recursif
+     * @param \ApplicationBundle\Entity\Fraction $fraction
      *
      * @return Mouvement
      */
-    public function setRecursif($recursif)
+    public function setFraction(\ApplicationBundle\Entity\Fraction $fraction = null)
     {
-        $this->recursif = $recursif;
+        $this->fraction = $fraction;
 
         return $this;
     }
 
     /**
-     * Get recursif
+     * Get fraction
      *
-     * @return string
+     * @return \ApplicationBundle\Entity\Fraction
      */
-    public function getRecursif()
+    public function getFraction()
     {
-        return $this->recursif;
+        return $this->fraction;
     }
 }
-

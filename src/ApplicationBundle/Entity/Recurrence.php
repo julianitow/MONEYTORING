@@ -36,7 +36,6 @@ class Recurrence
      */
     private $type;
 
-
     /**
      * Get id
      *
@@ -70,5 +69,28 @@ class Recurrence
     {
         return $this->dateFin;
     }
-}
 
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Recurrence
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+}
