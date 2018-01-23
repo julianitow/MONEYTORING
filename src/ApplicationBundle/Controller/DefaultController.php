@@ -3,6 +3,7 @@
 namespace ApplicationBundle\Controller;
 
 use ApplicationBundle\Entity\Utilisateur;
+use ApplicationBundle\Repository\UtilisateurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -30,8 +31,22 @@ class DefaultController extends Controller
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $utilisateur = $form->getData();
+            $utilisateurFormulaire = $form->getData();
 
+            // On récupère le gestionnaire d'entité
+
+            $gestionnaireEntite = $this->getDoctrine()->getManager() ;
+
+            // On récupère le repository de l'entité utilisateur:
+
+            $repositoryUtilisateur = $gestionnaireEntite->getRepository(UtilisateurRepository::class);
+
+            $utilisateur = $repositoryUtilisateur->findByEmail($utilisateurFormulaire->getEmail());
+
+            if(!is_null($utilisateur) && $utilisateur->getMotDePasse()==$utilisateurFormulaire->getMotDePasse())
+                return $this->render('@Application/Default/index.html.twig', [
+                    'utilisateur'=>$utilisateurFormulaire,
+                ]);
         }
 
         return $this->render('@Application/Default/connexion.html.twig', [
