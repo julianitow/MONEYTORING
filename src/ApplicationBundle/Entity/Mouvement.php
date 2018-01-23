@@ -52,7 +52,7 @@ class Mouvement
     /**
      * @var recurrence
      *
-     * @ORM\ManyToOne(targetEntity="ApplicationBundle/Recurrence")
+     * @ORM\ManyToOne(targetEntity="ApplicationBundle\Entity\Recurrence")
      */
     private $recurrence;
 
