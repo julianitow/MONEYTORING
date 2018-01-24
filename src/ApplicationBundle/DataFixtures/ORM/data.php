@@ -1,8 +1,13 @@
 <?php
 namespace Application\DataFixtures\ORM;
+
 use ApplicationBundle\Entity\Utilisateur;
+use ApplicationBundle\Entity\Fraction;
+use ApplicationBundle\Entity\SousFraction;
+
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Persistence\ObjectManager;
+
     class ApplicationFixtures extends Fixture
     {
         public function load(ObjectManager $manager)
@@ -16,9 +21,25 @@ use Doctrine\Common\Persistence\ObjectManager;
             $utilisateur->setToken(0);
             $utilisateur->setBudgetGlobal(0);
             $utilisateur->setDaltonisme(false);
-            $utilisateur->setAdmin(false);
             
             $manager->persist($utilisateur);
+
+            $partition = new Fraction();
+            $partition->setNom('Course');
+            $partition->setMontant(100);
+            $partition->setCouleur('#097867');
+            $partition->setPriorite(1);
+
+            $manager->persist($partition);
+
+            $sousPartition = new SousFraction();
+            $sousPartition->setNom('Alimentaire');
+            $sousPartition->setMontant(50);
+            $sousPartition->setCouleur('#098767');
+            $sousPartition->setPriorite(1);
+
+            $manager->persist($sousPartition);
+
             $manager->flush();
         }
     }

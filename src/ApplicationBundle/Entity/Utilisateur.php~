@@ -78,14 +78,6 @@ class Utilisateur
     private $daltonisme;
 
     /**
-     * @var bool
-     *
-     * @ORM\Column(name="admin", type="boolean")
-     */
-    private $admin;
-
-
-    /**
      * Get id
      *
      * @return int
@@ -287,28 +279,4 @@ class Utilisateur
         return $this->daltonisme;
     }
 
-    /**
-     * Set admin
-     *
-     * @param boolean $admin
-     *
-     * @return utilisateur
-     */
-    public function setAdmin($admin)
-    {
-        $this->admin = $admin;
-
-        return $this;
-    }
-
-    /**
-     * Get admin
-     *
-     * @return bool
-     */
-    public function getAdmin()
-    {
-        return $this->admin;
-    }
 }
-
