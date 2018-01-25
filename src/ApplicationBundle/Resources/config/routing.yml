@@ -4,4 +4,4 @@ application_homepage:
 
 application_connexion:
     path:     /connexion
-    defaults: { _controller: ApplicationBundle:Default:connexion }
+    defaults: { _controller: ApplicationBundle:User:connexion }

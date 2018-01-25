@@ -13,14 +13,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
-class DefaultController extends Controller
+class UserController extends Controller
 {
-    public function indexAction()
-    {
-        return $this->render('@Application/Default/index.html.twig');
-    }
-
-    public function connexionAction(Request $request)
+	public function connexionAction(Request $request)
     {
         $utilisateur = new Utilisateur();
 
@@ -43,10 +38,10 @@ class DefaultController extends Controller
             $user = $repositoryUsers->findOneByEmail($utilisateur->getEmail());
             if (!(is_null($user)))
             {
-                if ($utilisateur->getMotDePasse() == $user->getMotDePasse())
+                /*if ($utilisateur->getMotDePasse() == $user->getMotDePasse())
                 {
                     return $this->render('@Application/Default/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur'=> $user]);
-                }
+                }*/
             }
 
         }
