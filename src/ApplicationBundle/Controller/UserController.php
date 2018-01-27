@@ -4,6 +4,7 @@ namespace ApplicationBundle\Controller;
 
 use ApplicationBundle\Entity\Utilisateur;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 use Symfony\Component\Form\Button;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -17,9 +18,11 @@ class UserController extends Controller
 {
 	public function connexionAction(Request $request)
     {
-        $utilisateur = new Utilisateur();
+        $error = null;
 
-        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $utilisateur);
+        $user = new Utilisateur();
+
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
 
         $formBuilder
             ->add('email', EmailType::class, ['label'=> false, 'attr' => ['placeholder' => "Adresse e-mail"]])
@@ -32,20 +35,26 @@ class UserController extends Controller
 
         if($form->isSubmitted() && $form->isValid())
         {
-            $utilisateur = $form->getData();
+            $user = $form->getData();
             $manager = $this->getDoctrine()->getManager();
             $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
-            $user = $repositoryUsers->findOneByEmail($utilisateur->getEmail());
-            if (!(is_null($user)))
-            {
-                /*if ($utilisateur->getMotDePasse() == $user->getMotDePasse())
+            
+                try
                 {
-                    return $this->render('@Application/Default/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur'=> $user]);
-                }*/
-            }
-
+                    /* remplacement DQL
+                    $user = $repositoryUsers->findOneByEmail($utilisateur->getEmail());
+                    /*if ($utilisateur->getMotDePasse() == $user->getMotDePasse())
+                    {
+                        return $this->render('@Application/Default/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur'=> $user]);
+                    } */               
+                }
+                catch (\Doctrine\ORM\NoResultException $e)
+                {
+                    $error  = "NoResultException";
+                }
+            
         }
 
-        return $this->render('@Application/Default/connexion.html.twig', ['form'=> $form->createView(),]);
+        return $this->render('@Application/Default/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur' => $user, 'error' => $error]);
     }
 }
