@@ -2,6 +2,10 @@ application_homepage:
     path:     /
     defaults: { _controller: ApplicationBundle:Default:index }
 
-application_connexion:
+#application_connexion:
+#    path:     /connexion
+#    defaults: { _controller: ApplicationBundle:User:connexion }
+
+connexion:
     path:     /connexion
     defaults: { _controller: ApplicationBundle:User:connexion }

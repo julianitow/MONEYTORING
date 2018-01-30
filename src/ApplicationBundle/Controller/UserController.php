@@ -2,10 +2,13 @@
 
 namespace ApplicationBundle\Controller;
 
-use ApplicationBundle\Entity\Utilisateur;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use ApplicationBundle\Entity\Utilisateur;
+use Doctrine\ORM\Query\ResultSetMapping;
+//use Doctrine\ORM\Query\ResultSetMappingBuilder;
 
+
+//CONTENU FORMULAIRE
 use Symfony\Component\Form\Button;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\FormType;
@@ -14,9 +17,10 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 
+
 class UserController extends Controller
 {
-	public function connexionAction(Request $request)
+    public function connexionAction(Request $request)
     {
         $error = null;
 
@@ -41,12 +45,7 @@ class UserController extends Controller
             
                 try
                 {
-                    /* remplacement DQL
-                    $user = $repositoryUsers->findOneByEmail($utilisateur->getEmail());
-                    /*if ($utilisateur->getMotDePasse() == $user->getMotDePasse())
-                    {
-                        return $this->render('@Application/Default/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur'=> $user]);
-                    } */               
+                	$utilisateur = $repositoryUsers->findByEmail($user->getEmail(), $user->getMotDePasse());
                 }
                 catch (\Doctrine\ORM\NoResultException $e)
                 {
@@ -55,6 +54,7 @@ class UserController extends Controller
             
         }
 
-        return $this->render('@Application/Default/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur' => $user, 'error' => $error]);
+        return $this->render('@Application/Default/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur' => $utilisateur, 'error' => $error]);
     }
+
 }

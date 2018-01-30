@@ -10,4 +10,19 @@ namespace ApplicationBundle\Repository;
  */
 class UtilisateurRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function findByEmail($email, $motDePasse)
+	{
+		$qb = $this->_em->createQueryBuilder('u');
+
+		$qb ->select('u')
+			->from('ApplicationBundle:Utilisateur', 'u')
+			->where('u.email = :email')
+			->andWhere('u.motDePasse = :motDePasse')
+			->setParameter('email', $email)
+			->setParameter('motDePasse', $motDePasse);
+
+		$requete = $qb->getQuery();
+
+		return $requete->getResult();  
+	}
 }
