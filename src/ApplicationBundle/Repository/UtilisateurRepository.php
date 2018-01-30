@@ -1,6 +1,8 @@
 <?php
 
 namespace ApplicationBundle\Repository;
+use Doctrine\ORM\NoResultException;
+
 
 /**
  * utilisateurRepository
@@ -23,6 +25,15 @@ class UtilisateurRepository extends \Doctrine\ORM\EntityRepository
 
 		$requete = $qb->getQuery();
 
-		return $requete->getResult();  
+		try
+		{
+			$result = $requete->getSingleResult();
+		}
+		catch (\Doctrine\ORM\NoResultException $e)
+		{
+			$result = "NoResultException";
+		}
+
+		return $result;
 	}
 }
