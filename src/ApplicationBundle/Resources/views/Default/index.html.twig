@@ -12,123 +12,129 @@
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet">
     <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
- 
+
 </head>
 
 <body>
 
+
 <!-- BANDEAU SUPÉRIEUR -->
-
-<nav class="navbar navbar-expand-sm navbar-dark" style="background: #727b84;">
-    <div class="container-fluid">
-        <div class="col-sm-3">
-            <div class="container-fluid">
-                <a>Bonjour monsieur X </a><br><br>
-                <a href="#" class="badge badge-pill badge-secondary">Paramètres utilisateur</a><br>
-                <a href="#" class="badge badge-pill badge-secondary">Déconnexion</a>
-            </div>
-        </div>
-        <div class="col-lg-6">
-            <div class="container-fluid">
-                <img align="center" class="img-fluid" src="pictures/logo1texte.PNG" alt="Logo appli" />
-            </div>
-        </div>
-        <div class="col-lg-3">
-            <div class="container-fluid">
-                <a class="navbar-brand col-sm-3 col-md-12 mr-0">Date : </a><br>
-                <a class="navbar-brand col-sm-3 col-md-12 mr-0">message situation</a><br>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<!-- MENU LATÉRAL -->
-
-<div class="container-fluid">
-    <div class="row">
-        <nav class="col-sm-2 d-none d-md-block bg-light sidebar" id="menuBloc">
-            <div class="col-12">
-                <div class="sidebar-sticky">
-                    <ul class="nav fluid-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#">
-                                <span data-feather="home"></span>
-                                Accueil <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="file"></span>
-                                Partitionner
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="file"></span>
-                                Simulateur
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="bar-chart-2"></span>
-                                Modifier mouvement
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="bar-chart-2"></span>
-                                Entrer mouvement
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <span data-feather="layers"></span>
-                                Aide
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <div class="col-10">
-            <div class="container-fluid`">
-                <div class="row">
-                    <div class="col-4">
+            <nav class="navbar" style="background: #727b84;">
+                <div class="container-fluid">
+                    <div class="col-3">
                         <div class="container-fluid">
-                            <div class="container-fluid">
-                                <h4> Budget Global </h4>
-                                <li> ° ....</li>
-                                <li> ° ....</li>
-                                <li> ° ....</li>
-                                <li> ° ....</li>
-                            </div>
-                            <div class="container-fluid">
-                                <h4> formulaire mouvement</h4>
-                            </div>
+                            <a class="blockquote">Bonjour monsieur X </a><br><br>
+                            <a href="#" class="badge badge-pill badge-secondary">Paramètres utilisateur</a><br>
+                            <a href="#" class="badge badge-pill badge-secondary">Déconnexion</a><br>
+                            <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#collapseMenu">
+                                &#9776;
+                            </button>
                         </div>
                     </div>
-                    <div class="col-5">
+                    <div class="col-6">
                         <div class="container-fluid">
-                            <img align="center" width="100%" height="100%"  src="pictures/Graphique.png" alt="graphique" />
+                            <img align="center" class="img-fluid" src="pictures/logo1texte.PNG" alt="Logo appli" />
                         </div>
                     </div>
                     <div class="col-3">
                         <div class="container-fluid">
-                            sition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem
-                            sition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem
+                            <a class="blockquote">Date : </a><br><br>
+                            <a class="blockquote">message situation</a><br>
                         </div>
                     </div>
                 </div>
+            </nav>
+
+
+<!-- MENU LATÉRAL -->
+
+                  <div class="collapse navbar-toggleable-xs" id="collapseMenu">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <nav class="col-sm-2 d-none d-md-block bg-light sidebar" id="menuBloc">
+                                <div class="col-12">
+                                    <div class="sidebar-sticky">
+                                        <ul class="nav">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" href="#">
+                                                    <span data-feather="home"></span>
+                                                    Accueil <span class="sr-only">(current)</span>
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#">
+                                                    <span data-feather="file"></span>
+                                                    Partitionner
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#">
+                                                    <span data-feather="file"></span>
+                                                    Simulateur
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#">
+                                                    <span data-feather="bar-chart-2"></span>
+                                                    Modifier mouvement
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#">
+                                                    <span data-feather="bar-chart-2"></span>
+                                                    Entrer mouvement
+                                                </a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#">
+                                                    <span data-feather="layers"></span>
+                                                    Aide
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                  </div>
+
+
+                    <div class="col-12">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="container-fluid">
+                                        <div class="container-fluid">
+                                            <h4> Budget Global </h4>
+                                            <li> ° ....</li>
+                                            <li> ° ....</li>
+                                            <li> ° ....</li>
+                                            <li> ° ....</li>
+                                        </div>
+                                        <div class="container-fluid">
+                                            <h4> formulaire mouvement</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-5">
+                                    <div class="container-fluid">
+                                        <img align="center" width="100%" height="100%"  src="pictures/Graphique.png" alt="graphique" />
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="container-fluid">
+                                        sition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem
+                                        sition et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de l'imprimerie depuis les années 1500, quand un peintre anonyme assembla ensemble des morceaux de texte pour réaliser un livre spécimen de polices de texte. Il n'a pas fait que survivre cinq siècles, mais s'est aussi adapté à la bureautique informatique, sans que son contenu n'en soit modifié. Il a été popularisé dans les années 1960 grâce à la vente de feuilles Letraset contenant des passages du Lorem
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
             </div>
-        </div>
-    </div>
 
-    <footer class="footer">
-        <span class="text-muted"> Groupe projet 6 </span>
-    </footer>
 
-</div>
+
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
