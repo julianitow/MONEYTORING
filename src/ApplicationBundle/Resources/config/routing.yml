@@ -9,3 +9,7 @@ application_homepage:
 connexion:
     path:     /connexion
     defaults: { _controller: ApplicationBundle:User:connexion }
+
+inscription:
+    path:     /inscription
+    defaults: { _controller: ApplicationBundle:User:inscription }

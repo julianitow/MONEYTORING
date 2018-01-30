@@ -59,21 +59,21 @@ class Utilisateur
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=20)
+     * @ORM\Column(name="token", type="string", length=20, nullable = true, options={"default" : null})
      */
     private $token;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="budgetGlobal", type="integer", unique=true)
+     * @ORM\Column(name="budgetGlobal", type="integer", nullable = true, options={"default" : null})
      */
     private $budgetGlobal;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="daltonisme", type="boolean")
+     * @ORM\Column(name="daltonisme", type="boolean", nullable = true, options={"default" : false})
      */
     private $daltonisme;
 
