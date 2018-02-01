@@ -39,7 +39,6 @@ class Utilisateur implements UserInterface
     private $prenom;
 
     /**
-     * @Assert\NotBlank()
      * @Assert\Length(max=4096)
      */
     private $motDePasseClair;
