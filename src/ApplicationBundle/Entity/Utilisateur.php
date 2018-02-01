@@ -1,6 +1,9 @@
 <?php
 
 namespace ApplicationBundle\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -10,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="utilisateur")
  * @ORM\Entity(repositoryClass="ApplicationBundle\Repository\UtilisateurRepository")
  */
-class Utilisateur
+class Utilisateur implements UserInterface
 {
     /**
      * @var int
@@ -34,6 +37,12 @@ class Utilisateur
      * @ORM\Column(name="prenom", type="string", length=50)
      */
     private $prenom;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
+     */
+    private $motDePasseClair;
 
     /**
      * @var string
@@ -133,6 +142,30 @@ class Utilisateur
     public function getPrenom()
     {
         return $this->prenom;
+    }
+
+    /**
+     * Set motDePasse
+     *
+     * @param string $motDePasseClair
+     *
+     * @return utilisateur
+     */
+    public function setMotDePasseClair($motDePasseClair)
+    {
+        $this->motDePasseClair = $motDePasseClair;
+
+        return $this;
+    }
+
+    /**
+     * Get motDePasseClair
+     *
+     * @return string
+     */
+    public function getMotDePasseClair()
+    {
+        return $this->motDePasseClair;
     }
 
     /**
@@ -277,6 +310,32 @@ class Utilisateur
     public function getDaltonisme()
     {
         return $this->daltonisme;
+    }
+
+    public function getSalt()
+    {
+        // you *may* need a real salt depending on your encoder
+        // see section on salt below
+        return null;
+    }
+
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+
+    public function eraseCredentials()
+    {
+    }
+
+    public function getPassword()
+    {
+        return $this->getMotDePasse();
+    }
+
+    public function getUsername()
+    {
+        return $this->getNom();
     }
 
 }

@@ -36,17 +36,4 @@ class UtilisateurRepository extends \Doctrine\ORM\EntityRepository
 
 		return $result;
 	}
-
-	public function insertUser($nom, $prenom, $email, $dateNaiss, $daltonisme, $motDePasse)
-	{
-		$qb = $this->_em->createQueryBuilder('u');
-		$qb ->insert('Utilisateur')
-			->values(['nom', 'prenom', 'email', 'dateNaiss', 'daltonisme', 'daltonisme'])
-			->setParameter(0, $nom)
-			->setParameter(1, $prenom)
-			->setParameter(2, $email)
-			->setParameter(3, $dateNaiss)
-			->setParameter(4, $daltonisme);
-
-	}
 }
