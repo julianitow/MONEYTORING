@@ -8,6 +8,11 @@
 
             {% if utilisateur == "NoResultException" %}
                 <div class="alert alert-danger">
+                        Identifiant incorrect
+                </div>
+            {% endif %}
+            {% if error %}
+                <div class="alert alert-danger">
                         Identifiant ou mot de passe incorrect
                 </div>
             {% endif %}

@@ -35,7 +35,7 @@ class UserController extends Controller
 
         $formBuilder
             ->add('email', EmailType::class, ['label'=> false, 'attr' => ['placeholder' => "Adresse e-mail"]])
-            ->add('motDePasse', PasswordType::class, ['label'=> false, 'attr' => ['placeholder' => "Mot de Passe"]])
+            ->add('motDePasseClair', PasswordType::class, ['label'=> false, 'attr' => ['placeholder' => "Mot de Passe"]])
             ->add('Se connecter', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']]);
 
         $form = $formBuilder->getForm();
@@ -45,13 +45,35 @@ class UserController extends Controller
         if($form->isSubmitted() && $form->isValid())
         {
             $user = $form->getData();
+            $motDePasseSaisie = $user->getMotDePasseClair();
             $manager = $this->getDoctrine()->getManager();
             $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
-            $user = $repositoryUsers->findByEmail($user->getEmail(), $user->getMotDePasse());
-            
+            //VERIFICATION HASH PASSWORD
+            $passwordEncoder = $this->container->get('security.password_encoder');
+            $hashedPassword = $repositoryUsers->findByEmail($user->getEmail()/*, $user->getMotDePasseClair()*/);
+
+            if ($hashedPassword != "NoResultException")
+            {
+                $user->setMotDePasse($hashedPassword["motDePasse"]);
+            }
+            else
+            {
+                $error = "NoResultException";
+
+            }
+
+            if ($passwordEncoder->isPasswordValid($user, $motDePasseSaisie))
+            {
+                 $user = $repositoryUsers->findOneByEmail($user->getEmail());
+                 $error = null;
+            }
+            else
+            {
+                $error = "NoResultException";
+            }           
         }
 
-        return $this->render('@Application/User/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur' => $user]);
+        return $this->render('@Application/User/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur' => $user, 'error' => $error]);
     }
     public function inscriptionAction(Request $request)
     {
@@ -82,7 +104,7 @@ class UserController extends Controller
             $passwordEncoder = $this->get('security.password_encoder');
             $motDePasse = $passwordEncoder->encodePassword($user, $user->getMotDePasseClair());
             $user->setMotDePasse($motDePasse);
-            
+
             $manager = $this->getDoctrine()->getManager();
             $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
             $manager->persist($user);

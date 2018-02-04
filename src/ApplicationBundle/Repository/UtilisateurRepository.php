@@ -12,16 +12,16 @@ use Doctrine\ORM\NoResultException;
  */
 class UtilisateurRepository extends \Doctrine\ORM\EntityRepository
 {
-	public function findByEmail($email, $motDePasse)
+	public function findByEmail($email/*, $motDePasse*/)
 	{
 		$qb = $this->_em->createQueryBuilder('u');
 
-		$qb ->select('u')
+		$qb ->select('u.motDePasse')
 			->from('ApplicationBundle:Utilisateur', 'u')
 			->where('u.email = :email')
-			->andWhere('u.motDePasse = :motDePasse')
-			->setParameter('email', $email)
-			->setParameter('motDePasse', $motDePasse);
+			//->andWhere('u.motDePasse = :motDePasse')
+			->setParameter('email', $email);
+			//->setParameter('motDePasse', $motDePasse);
 
 		$requete = $qb->getQuery();
 
@@ -36,4 +36,5 @@ class UtilisateurRepository extends \Doctrine\ORM\EntityRepository
 
 		return $result;
 	}
+
 }
