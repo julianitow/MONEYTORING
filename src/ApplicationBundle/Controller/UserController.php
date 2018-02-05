@@ -28,6 +28,7 @@ class UserController extends Controller
 {
     public function connexionAction(Request $request)
     {
+        $error = null;
 
         $user = new Utilisateur();
 
@@ -50,8 +51,10 @@ class UserController extends Controller
             $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
             //VERIFICATION HASH PASSWORD
             $passwordEncoder = $this->container->get('security.password_encoder');
+            //Récupération du mit de passe crypté
             $hashedPassword = $repositoryUsers->findByEmail($user->getEmail()/*, $user->getMotDePasseClair()*/);
 
+            //verification du resultat de la requete
             if ($hashedPassword != "NoResultException")
             {
                 $user->setMotDePasse($hashedPassword["motDePasse"]);
@@ -61,7 +64,7 @@ class UserController extends Controller
                 $error = "NoResultException";
 
             }
-
+            //Verification du mot de passe récupéré avec celui saisie
             if ($passwordEncoder->isPasswordValid($user, $motDePasseSaisie))
             {
                  $user = $repositoryUsers->findOneByEmail($user->getEmail());
