@@ -6,12 +6,12 @@
             <img src="{{ asset('pictures/logo1texte.PNG') }}" class="img-fluid" >
             <h2 class="form-signin-heading">Connexion</h2>
 
-            {% if error %}
+            {% if error == "NoResultException" %}
                 <div class="alert alert-danger">
                         Identifiant ou mot de passe incorrect
                 </div>
             
-            {% else %}
+            {% elseif error == "NoError" %}
                 <div class="alert alert-success">
                     Connexion réussie
                 </div>

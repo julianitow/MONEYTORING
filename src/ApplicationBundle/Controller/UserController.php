@@ -68,7 +68,7 @@ class UserController extends Controller
             if ($passwordEncoder->isPasswordValid($user, $motDePasseSaisie))
             {
                  $user = $repositoryUsers->findOneByEmail($user->getEmail());
-                 $error = null;
+                 $error = "NoError";
             }
             else
             {
