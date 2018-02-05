@@ -1,22 +1,19 @@
 {% extends "@Application/Default/template.html.twig" %}
 {% block body %}
-
-    {% if error %}
-    <div>
-        {{ error }}
-    </div>
-    {% endif %}
-
+	{% if error != null %}
+		{{ erreur }}
+	{% endif %}
+    <link href="{{ asset('css/signup.css') }}" rel="stylesheet">
     <div class="container">
-        <div class="form-signin" id="form">
+        <div class="form-signup" id="form">
             <img src="{{ asset('pictures/logo1texte.PNG') }}" class="img-fluid" >
-            <h2 class="form-signin-heading">Connexion</h2>
+            <h2 class="form-signup-heading">Inscription</h2>
             
             {{ form_start(form) }}
             {{ form_widget(form) }}
             {{ form_end(form) }}
 
-            {{ dump(utilisateur)}}
+            {{ dump(error)}}
         </div>
     </div>
 {%  endblock %}

@@ -1,6 +1,8 @@
 <?php
 
 namespace ApplicationBundle\Repository;
+use Doctrine\ORM\NoResultException;
+
 
 /**
  * utilisateurRepository
@@ -10,4 +12,29 @@ namespace ApplicationBundle\Repository;
  */
 class UtilisateurRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function findByEmail($email/*, $motDePasse*/)
+	{
+		$qb = $this->_em->createQueryBuilder('u');
+
+		$qb ->select('u.motDePasse')
+			->from('ApplicationBundle:Utilisateur', 'u')
+			->where('u.email = :email')
+			//->andWhere('u.motDePasse = :motDePasse')
+			->setParameter('email', $email);
+			//->setParameter('motDePasse', $motDePasse);
+
+		$requete = $qb->getQuery();
+
+		try
+		{
+			$result = $requete->getSingleResult();
+		}
+		catch (\Doctrine\ORM\NoResultException $e)
+		{
+			$result = "NoResultException";
+		}
+
+		return $result;
+	}
+
 }
