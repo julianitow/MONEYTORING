@@ -2,6 +2,8 @@
 
 namespace ApplicationBundle\Controller;
 
+//ENTITE / CONTROLLER ET ERREUR
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ApplicationBundle\Entity\Utilisateur;
 use Doctrine\ORM\NoResultException;
@@ -21,19 +23,26 @@ use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 
+
+//POUR ENCODAGE PASSWORD
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+
+//POUR LES SESSIONS
+
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class UserController extends Controller
 {
     public function connexionAction(Request $request)
     {
-        $error = null;
+        $error = null; // pour éviter le "undefined variable error"
 
-        $user = new Utilisateur();
+        $user = new Utilisateur(); //création d' un objet utilisater vide 
 
-        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user); // Initisalisation du form builder 
 
+        //CREATION DU FORMULAIRE
         $formBuilder
             ->add('email', EmailType::class, ['label'=> false, 'attr' => ['placeholder' => "Adresse e-mail"]])
             ->add('motDePasseClair', PasswordType::class, ['label'=> false, 'attr' => ['placeholder' => "Mot de Passe"]])
@@ -69,6 +78,7 @@ class UserController extends Controller
             {
                  $user = $repositoryUsers->findOneByEmail($user->getEmail());
                  $error = "NoError";
+                 return $this->redirectToRoute('application_homepage');
             }
             else
             {

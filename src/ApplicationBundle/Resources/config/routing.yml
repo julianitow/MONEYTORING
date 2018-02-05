@@ -1,5 +1,5 @@
 application_homepage:
-    path:     /
+    path:     /accueil
     defaults: { _controller: ApplicationBundle:Default:index }
 
 #application_connexion:
