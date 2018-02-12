@@ -1,0 +1,50 @@
+{% extends '@Application/Default/index.html.twig' %}
+
+{% block title %}
+    <title>Moneytoring - Simulation</title>
+{% endblock %}
+
+{% block link %}
+    <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Accueil">
+            <a class="nav-link" href="{{ path('application_homepage') }}">
+                <i class="fa fa-fw fa-home"></i>
+                <span class="nav-link-text">Accueil</span>
+            </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Partionner">
+            <a class="nav-link" href="{{ path('partition') }}">
+                <i class="fa fa-fw fa-eye"></i>
+                <span class="nav-link-text">Partitionner</span>
+            </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Simulateur">
+            <a class="nav-link" href="{{ path('simulation') }}">
+                <i class="fa fa-fw fa-area-chart"></i>
+                <span class="nav-link-text"><b>Simulateur</b></span>
+            </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Entrer mouvement">
+            <a class="nav-link" href="{{ path('entrerMouvement') }}">
+                <i class="fa fa-fw fa-table"></i>
+                <span class="nav-link-text">Entrer mouvement</span>
+            </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
+            <a class="nav-link" href="{{ path('modifierMouvement') }}">
+                <i class="fa fa-fw fa-table"></i>
+                <span class="nav-link-text">Modifier mouvement</span>
+            </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Aide">
+            <a class="nav-link" href="{{ path('aide') }}">
+                <i class="fa fa-fw fa-coffee"></i>
+                <span class="nav-link-text">Aide</span>
+            </a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block body %}
+
+{% endblock %}

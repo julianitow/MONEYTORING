@@ -13,3 +13,31 @@ connexion:
 inscription:
     path:     /inscription
     defaults: { _controller: ApplicationBundle:User:inscription }
+
+partition:
+    path:     /partition
+    defaults: { _controller: ApplicationBundle:Default:partition }
+
+simulation:
+    path:     /simulation
+    defaults: { _controller: ApplicationBundle:Default:simulation }
+
+entrerMouvement:
+    path:     /entrerMouvement
+    defaults: { _controller: ApplicationBundle:Default:entrerMouvement }
+
+modifierMouvement:
+    path:     /modifierMouvement
+    defaults: { _controller: ApplicationBundle:Default:modifierMouvement }
+
+aide:
+    path:     /aide
+    defaults: { _controller: ApplicationBundle:Default:aide }
+
+parametres:
+    path:     /parametres
+    defaults: { _controller: ApplicationBundle:Default:parametresUtilisateur }
+
+deconnexion:
+    path:     /deconnexion
+    defaults: { _controller: ApplicationBundle:Default:deconnexion }
