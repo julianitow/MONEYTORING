@@ -1,0 +1,28 @@
+{% extends "@Application/Default/template.html.twig" %}
+{% block body %}
+    <title>MONEYTORING - connexion</title>
+    <div class="container">
+        <div class="form-signin" id="form">
+            <img src="{{ asset('pictures/logo1texte.PNG') }}" class="img-fluid" >
+            <h2 class="form-signin-heading">Connexion</h2>
+
+            {% if error == "NoResultException" %}
+                <div class="alert alert-danger">
+                        Identifiant ou mot de passe incorrect
+                </div>
+            
+            {% elseif error == "NoError" %}
+                <div class="alert alert-success">
+                    Connexion réussie
+                </div>
+                <!--<meta http-equiv="refresh" content="3", url="/">-->
+            {% endif %}
+            
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+            <a href="inscription">Pas encore des notres ?</a>
+            <a href="inscription">Mot de passe oublié ?</a>
+        </div>
+    </div>
+{%  endblock %}

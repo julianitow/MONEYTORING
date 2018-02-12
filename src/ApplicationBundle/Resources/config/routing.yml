@@ -1,7 +1,15 @@
 application_homepage:
-    path:     /
+    path:     /accueil
     defaults: { _controller: ApplicationBundle:Default:index }
 
-application_connexion:
+#application_connexion:
+#    path:     /connexion
+#    defaults: { _controller: ApplicationBundle:User:connexion }
+
+connexion:
     path:     /connexion
-    defaults: { _controller: ApplicationBundle:Default:connexion }
+    defaults: { _controller: ApplicationBundle:User:connexion }
+
+inscription:
+    path:     /inscription
+    defaults: { _controller: ApplicationBundle:User:inscription }

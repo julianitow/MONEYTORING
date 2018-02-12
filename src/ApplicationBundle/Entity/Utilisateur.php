@@ -1,6 +1,9 @@
 <?php
 
 namespace ApplicationBundle\Entity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -8,9 +11,9 @@ use Doctrine\ORM\Mapping as ORM;
  * utilisateur
  *
  * @ORM\Table(name="utilisateur")
- * @ORM\Entity(repositoryClass="ApplicationBundle\Repository\utilisateurRepository")
+ * @ORM\Entity(repositoryClass="ApplicationBundle\Repository\UtilisateurRepository")
  */
-class Utilisateur
+class Utilisateur implements UserInterface
 {
     /**
      * @var int
@@ -36,6 +39,11 @@ class Utilisateur
     private $prenom;
 
     /**
+     * @Assert\Length(max=4096)
+     */
+    private $motDePasseClair;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="motDePasse", type="string", length=200)
@@ -59,31 +67,23 @@ class Utilisateur
     /**
      * @var string
      *
-     * @ORM\Column(name="token", type="string", length=20)
+     * @ORM\Column(name="token", type="string", length=20, nullable = true, options={"default" : null})
      */
     private $token;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="budgetGlobal", type="integer", unique=true)
+     * @ORM\Column(name="budgetGlobal", type="integer", nullable = true, options={"default" : null})
      */
     private $budgetGlobal;
 
     /**
      * @var bool
      *
-     * @ORM\Column(name="daltonisme", type="boolean")
+     * @ORM\Column(name="daltonisme", type="boolean", nullable = true, options={"default" : false})
      */
     private $daltonisme;
-
-    /**
-     * @var bool
-     *
-     * @ORM\Column(name="admin", type="boolean")
-     */
-    private $admin;
-
 
     /**
      * Get id
@@ -141,6 +141,30 @@ class Utilisateur
     public function getPrenom()
     {
         return $this->prenom;
+    }
+
+    /**
+     * Set motDePasse
+     *
+     * @param string $motDePasseClair
+     *
+     * @return utilisateur
+     */
+    public function setMotDePasseClair($motDePasseClair)
+    {
+        $this->motDePasseClair = $motDePasseClair;
+
+        return $this;
+    }
+
+    /**
+     * Get motDePasseClair
+     *
+     * @return string
+     */
+    public function getMotDePasseClair()
+    {
+        return $this->motDePasseClair;
     }
 
     /**
@@ -287,27 +311,30 @@ class Utilisateur
         return $this->daltonisme;
     }
 
-    /**
-     * Set admin
-     *
-     * @param boolean $admin
-     *
-     * @return utilisateur
-     */
-    public function setAdmin($admin)
+    public function getSalt()
     {
-        $this->admin = $admin;
-
-        return $this;
+        // you *may* need a real salt depending on your encoder
+        // see section on salt below
+        return null;
     }
 
-    /**
-     * Get admin
-     *
-     * @return bool
-     */
-    public function getAdmin()
+    public function getRoles()
     {
-        return $this->admin;
+        return array('ROLE_USER');
     }
+
+    public function eraseCredentials()
+    {
+    }
+
+    public function getPassword()
+    {
+        return $this->getMotDePasse();
+    }
+
+    public function getUsername()
+    {
+        return $this->getNom();
+    }
+
 }

@@ -4,7 +4,6 @@ Moneytoring sera une application web informative servant d’une part à suivre 
 
 L’application visera les jeunes en général qui ont un budget à tenir sur un temps donné. Moneytoring pourra être utilisée au bureau ou chez soi, voire même dans les transports en commun vu que celle-ci sera disponible sur PC et sur smartphone. 
 
-Pour la réalisation de Moneytoring, le chef de projet sera Julien Guillan. 
 
 Symfony Standard Edition
 ========================
