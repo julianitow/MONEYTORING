@@ -88,6 +88,17 @@ class UserController extends Controller
 
         return $this->render('@Application/User/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur' => $user, 'error' => $error]);
     }
+
+    public function deconnexionAction()
+    {
+
+    }
+
+    public function parametreUtilisateurAction()
+    {
+
+    }
+
     public function inscriptionAction(Request $request)
     {
         $error = null;
