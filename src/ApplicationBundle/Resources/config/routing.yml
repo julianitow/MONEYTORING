@@ -13,3 +13,7 @@ connexion:
 inscription:
     path:     /inscription
     defaults: { _controller: ApplicationBundle:User:inscription }
+
+reinitailisation:
+    path:     /reinitialisation
+    defaults: { _controller:  ApplicationBundle:User:reinitialisationMotDePasse }

@@ -1,0 +1,26 @@
+{% extends "@Application/Default/template.html.twig" %}
+
+{% block body %}
+
+	<link href="{{ asset('css/signup.css') }}" rel="stylesheet">
+    <div class="container">
+        <div class="form-signup" id="form">
+            <img src="{{ asset('pictures/logo1texte.PNG') }}" class="img-fluid" >
+            <h2 class="form-signup-heading">Réinitialisation mot de passe </h2>
+             {% if error == "NoResultException" %}
+                <div class="alert alert-danger">
+                        Compte inexistant
+                </div>            
+            {% elseif error == "NoError" %}
+                <div class="alert alert-success">
+                    Mot de passe réinitialisé <a href="connexion">Veuillez-vous reconnecter</a>
+                </div>
+            {% endif %}
+
+		{{ form_start(form) }}
+		{{ form_widget(form) }}
+        {{ form_end(form) }}
+
+    	</div>
+	</div>
+{% endblock %}

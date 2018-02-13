@@ -2,7 +2,7 @@
 
 namespace ApplicationBundle\Controller;
 
-//ENTITE / CONTROLLER ET ERREUR
+//ENTITE CONTROLLER ET ERREUR
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ApplicationBundle\Entity\Utilisateur;
@@ -139,6 +139,90 @@ class UserController extends Controller
         }
 
         return $this->render('@Application/User/inscription.html.twig', ['form'=> $form->createView(), 'error'=> $error]);
+    }
+
+    public function reinitialisationMotDePasseAction(Request $request)
+    {
+        $error = null;
+
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
+
+        $user = new Utilisateur();
+
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
+
+        $formBuilder
+                    ->add('email', EmailType::class, ['label'=> false, 'attr' => ['placeholder'=> "Veuillez saisir votre adresse e-mail"]])
+                    ->add('réinitialiser', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']] );
+
+        $form = $formBuilder->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid())
+        { 
+
+            $user = $form->getData();
+            //HASHAGE
+            $passwordEncoder = $this->get('security.password_encoder');
+
+            //GENERATION MOT DE PASSE ALEATOIRE
+            $randomPassword = random_bytes(10);
+            $randomPassword = base64_encode($randomPassword); //codage en base 64 de la chaine générée plus haut
+
+            //HASHAGE DU PASSWORD
+            $motDePasse = $passwordEncoder->encodePassword($user, $randomPassword);//encodage du mot de passe généré
+
+            //recuperation de l'utilisateur
+            try
+            {
+                $user = $repositoryUsers->findOneByEmail($user->getEmail());
+                if ($user != NULL)
+                {
+                    $emailUser = $user->getemail();
+                }
+            }
+            catch (NoResultException $e)
+            {
+                $error = "NoResultException";
+            }
+
+            if ($user != NULL)
+            {
+                //ENVOI DU MOT DE PASSE GENERE PAR EMAIL
+
+                $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 25))
+                            ->setUsername('moneytoring.iutbayonne@gmail.com')
+                            ->setPassword('moneytoring1997')
+                            ->setEncryption('tls')
+                                ;
+                $mailer = new \Swift_Mailer($transport);
+
+                $message = (new \Swift_Message('Réinitialisation du mot de passe MONEYTORING.'))
+                            ->setFrom('moneytoring.iutbayonne@gmail.com')
+                            ->setTo($emailUser)
+                            ->setBody('Mot de passe généré : '. $randomPassword)
+                            ;
+                //$result = $mailer->send($message);
+
+                //APPLICATION DU NOUVEAU MOT DE PASSE :
+                $user->setMotDePasse($motDePasse);
+
+                $manager->persist($user);
+                $manager->flush();
+
+                $error = "NoError";
+            }
+            else
+            {
+                $error = "NoResultException";
+            }
+
+        }
+
+        return $this->render('@Application/User/reinitialisation.html.twig', ['form'=> $form->createView(), 'error' => $error]);
+
     }
 
 }
