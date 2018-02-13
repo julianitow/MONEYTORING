@@ -78,7 +78,7 @@ class UserController extends Controller
             {
                  $user = $repositoryUsers->findOneByEmail($user->getEmail());
                  $error = "NoError";
-                 return $this->redirectToRoute('application_homepage');
+                 return $this->render('@Application/Default/index.html.twig', ['utilisateur' => $user]);
             }
             else
             {
