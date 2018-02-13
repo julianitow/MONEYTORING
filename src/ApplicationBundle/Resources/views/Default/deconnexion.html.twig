@@ -48,3 +48,16 @@
 {% block body %}
 
 {% endblock %}
+
+{% block link2 %}
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('parametres') }}">
+                <i class="fa fa-fw fa-bookmark"></i>Paramètres utilisateur<br>
+            </a>
+            <a class="nav-link" href="{{ path('deconnexion') }}">
+                <i class="fa fa-fw fa-sign-out"></i><b>Déconnexion</b>
+            </a>
+        </li>
+    </ul>
+{% endblock %}
