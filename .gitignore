@@ -17,3 +17,4 @@
 /web/bundles/
 /config/parameters.yml
 /.idea/*
+/composer.lock

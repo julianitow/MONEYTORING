@@ -91,12 +91,12 @@ class UserController extends Controller
 
     public function deconnexionAction()
     {
-
+        return $this->render('@Application/User/deconnexion.html.twig');
     }
 
-    public function parametreUtilisateurAction()
+    public function parametresUtilisateurAction()
     {
-
+        return $this->render('@Application/User/parametresUtilisateur.html.twig');
     }
 
     public function inscriptionAction(Request $request)
@@ -215,7 +215,7 @@ class UserController extends Controller
                             ->setTo($emailUser)
                             ->setBody('Mot de passe généré : '. $randomPassword)
                             ;
-                //$result = $mailer->send($message);
+                $result = $mailer->send($message);
 
                 //APPLICATION DU NOUVEAU MOT DE PASSE :
                 $user->setMotDePasse($motDePasse);
@@ -235,5 +235,4 @@ class UserController extends Controller
         return $this->render('@Application/User/reinitialisation.html.twig', ['form'=> $form->createView(), 'error' => $error]);
 
     }
-
 }

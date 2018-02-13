@@ -19,4 +19,39 @@ class DefaultController extends Controller
     {
         return $this->render('@Application/Default/index.html.twig');
     }
+
+    public function partitionAction()
+    {
+        return $this->render('@Application/Default/partition.html.twig');
+    }
+
+    public function simulationAction()
+    {
+        return $this->render('@Application/Default/simulation.html.twig');
+    }
+
+    public function entrerMouvementAction()
+    {
+        return $this->render('@Application/Default/entrerMouvement.html.twig');
+    }
+
+    public function modifierMouvementAction()
+    {
+        return $this->render('@Application/Default/modifierMouvement.html.twig');
+    }
+
+    public function aideAction()
+    {
+        return $this->render('@Application/Default/aide.html.twig');
+    }
+
+    public function parametresUtilisateurAction()
+    {
+        return $this->render('@Application/Default/parametresUtilisateur.html.twig');
+    }
+
+    public function deconnexionAction()
+    {
+        return $this->render('@Application/Default/deconnexion.html.twig');
+    }
 }
