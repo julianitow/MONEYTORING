@@ -78,7 +78,13 @@ class UserController extends Controller
             {
                  $user = $repositoryUsers->findOneByEmail($user->getEmail());
                  $error = "NoError";
-                 return $this->render('@Application/Default/index.html.twig', ['utilisateur' => $user]);
+
+                 //passage de l'utilisateur dans une session
+                 $session = new session();
+                 $session->set('id', $user->getId());
+                 $session->set('prenom', $user->getPrenom());
+
+                 return $this->redirectToRoute('application_homepage');
             }
             else
             {
@@ -89,14 +95,27 @@ class UserController extends Controller
         return $this->render('@Application/User/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur' => $user, 'error' => $error]);
     }
 
-    public function deconnexionAction()
+    public function deconnexionAction(Request $request)
     {
-        return $this->render('@Application/User/deconnexion.html.twig');
+        $session = $request->getSession();
+        $session->invalidate();
+        
+        return $this->redirectToRoute('connexion');
     }
 
     public function parametresUtilisateurAction()
     {
-        return $this->render('@Application/User/parametresUtilisateur.html.twig');
+        $error = null;
+
+        $user = new Utilisateur();
+
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
+
+        $formBuilder
+                ->add('MotDePasseClair', RepeatedType::class, ['type' => PasswordType::class, 'first_options' => ['label'=> "Mot de passe", 'attr' => ['placeholder' => "Mot de Passe"]], 'second_options' => ['label'=> "Répetez mot de passe", 'attr' => ['placeholder' => "Vérification"]]]);
+        $form = $formBuilder->getForm();
+
+        return $this->render('@Application/User/parametresUtilisateur.html.twig', ['form'=> $form->createView(), 'error'=> $error]);
     }
 
     public function inscriptionAction(Request $request)
@@ -203,9 +222,9 @@ class UserController extends Controller
             {
                 //ENVOI DU MOT DE PASSE GENERE PAR EMAIL
 
-                $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 25))
+                $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 587))
                             ->setUsername('moneytoring.iutbayonne@gmail.com')
-                            ->setPassword('moneytoring1997')
+                            ->setPassword('moneytoring1997')    
                             ->setEncryption('tls')
                                 ;
                 $mailer = new \Swift_Mailer($transport);

@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * fraction
  *
  * @ORM\Table(name="fraction")
- * @ORM\Entity(repositoryClass="ApplicationBundle\Repository\fractionRepository")
+ * @ORM\Entity(repositoryClass="ApplicationBundle\Repository\FractionRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string")
  * @ORM\DiscriminatorMap({"fraction" = "Fraction", "sousFraction" = "SousFraction"})

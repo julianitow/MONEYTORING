@@ -12,12 +12,33 @@ use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
+use Symfony\Component\HttpFoundation\Session\Session;
+
 
 class DefaultController extends Controller
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
-        return $this->render('@Application/Default/index.html.twig');
+        $session = $request->getSession();
+        $id = $session->get('id');
+        $prenom = $session->get('prenom');
+         if ($id == null)
+        {
+            $error = "ConnexionNeeded";
+        }
+        else
+        {
+            $error = null;
+        }
+
+        //RECUPERATION FRACTION
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
+        //$partition = $repositoryFraction->findById(2);
+
+        //var_dump($partition);
+
+        return $this->render('@Application/Default/index.html.twig', ['id' => $id, 'prenom'=>$prenom, 'error' => $error]);
     }
 
     public function partitionAction()
@@ -43,15 +64,5 @@ class DefaultController extends Controller
     public function aideAction()
     {
         return $this->render('@Application/Default/aide.html.twig');
-    }
-
-    public function parametresUtilisateurAction()
-    {
-        return $this->render('@Application/Default/parametresUtilisateur.html.twig');
-    }
-
-    public function deconnexionAction()
-    {
-        return $this->render('@Application/Default/deconnexion.html.twig');
     }
 }
