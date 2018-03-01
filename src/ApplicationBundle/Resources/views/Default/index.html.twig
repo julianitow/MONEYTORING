@@ -255,9 +255,39 @@
         </script>
         </div>
       </div>
+      <style>
+        .form-control-label
+        {
+          margin-left: 50px;
+        }
+        .col-form-legend
+        {
+          margin-left: 50px;
+        }
+        .form-control{
+            margin-top: 20px;
+            margin-left: 50px;
+        }
+        h3 {
+          margin-top: 75px;
+          margin-left: 50px;
+        }
+        .btn
+        {
+          margin-left: 50px;
+        }
+        .alert
+        {
+          margin-top: 30px;
+        }
+      </style>
 
-        <div class="col-lg-1">
-            col 3
+
+        <div class="container">
+          <h3> Entrer un nouveau mouvement </h3>
+          {{ form_start(form) }}
+          {{ form_widget(form) }}
+          {{ form_end(form) }}
         </div>
     </div>
 

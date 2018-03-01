@@ -47,12 +47,45 @@
 
 {% block body %}
   <style>
+    .form-control-label
+    {
+      margin-left: 50px;
+    }
     .form-control{
-        padding:30px
+        margin-left:50px;
+    }
+    h3 {
+      margin-top: 75px;
+      margin-left: 50px;
+    }
+    .btn
+    {
+      margin-left: 50px;
+    }
+    .alert
+    {
+      margin-top: 30px;
     }
   </style>
+<div class="container">
+  {% if error == "ConstraintViolationException" %}
+    <div class="alert alert-danger">
+      Erreur : Nom de partition déja attribué.
+    </div>
+  {% elseif error == "succeed" %}
+    <div class="alert alert-success">
+      Partition créée avec succès.
+    </div>
+  {% endif %}
+</div>
+<div class="col-lg-10">
+  <h3>Créer nouvelle partition</h3>
+</div>
+<div class="col-lg-10">
   {{ form_start(form) }}
   {{ form_widget(form) }}
   {{ form_end(form) }}
+</div>
+{{ dump(utilisateur) }}
 
 {% endblock %}

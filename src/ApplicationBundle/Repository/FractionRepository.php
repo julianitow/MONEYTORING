@@ -33,4 +33,5 @@ class FractionRepository extends \Doctrine\ORM\EntityRepository
 
 		return $result;
 	}
+
 }

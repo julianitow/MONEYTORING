@@ -83,6 +83,7 @@ class UserController extends Controller
                  $session = new session();
                  $session->set('id', $user->getId());
                  $session->set('prenom', $user->getPrenom());
+                 $session->set('email', $user->getEmail());
 
                  return $this->redirectToRoute('application_homepage');
             }
