@@ -1,8 +1,10 @@
 <?php
 
 namespace ApplicationBundle\Controller;
-
+//ENTITES
 use ApplicationBundle\Entity\Utilisateur;
+use ApplicationBundle\Entity\Fraction;
+
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use Symfony\Component\Form\Button;
@@ -13,6 +15,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\ButtonType;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
 
 
 class DefaultController extends Controller
@@ -34,16 +39,42 @@ class DefaultController extends Controller
         //RECUPERATION FRACTION
         $manager = $this->getDoctrine()->getManager();
         $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
-        //$partition = $repositoryFraction->findById(2);
+        $partition = $repositoryFraction->findByUserID($id);
 
-        //var_dump($partition);
 
-        return $this->render('@Application/Default/index.html.twig', ['id' => $id, 'prenom'=>$prenom, 'error' => $error]);
+
+        return $this->render('@Application/Default/index.html.twig', ['id' => $id, 'prenom'=>$prenom, 'fraction'=>$partition, 'error' => $error]);
     }
 
-    public function partitionAction()
+    public function partitionAction(Request $request)
     {
-        return $this->render('@Application/Default/partition.html.twig');
+        //VERIFICATION DE CONNEXION
+        $session = $request->getSession();
+        $id = $session->get('id');
+        $prenom = $session->get('prenom');
+         if ($id == null)
+        {
+            $error = "ConnexionNeeded";
+        }
+        else
+        {
+            $error = null;
+        }
+        //FORMULAIRE AJOUT PARTITION
+
+        $fraction = new Fraction();
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $fraction);
+
+        //création du formulaire d'ajout
+        $formBuilder
+            ->add('nom', TextType::class, ['label'=>false, 'attr' => ['placeholder' => "Nom de la partition"]])
+            ;
+
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+
+
+        return $this->render('@Application/Default/partition.html.twig', ['form' => $form->createView(), 'prenom' => $prenom, 'error'=>$error]);
     }
 
     public function simulationAction()

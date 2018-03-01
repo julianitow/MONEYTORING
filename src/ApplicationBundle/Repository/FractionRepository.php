@@ -1,6 +1,7 @@
 <?php
 
 namespace ApplicationBundle\Repository;
+use Doctrine\ORM\NoResultException;
 
 /**
  * fractionRepository
@@ -10,4 +11,26 @@ namespace ApplicationBundle\Repository;
  */
 class FractionRepository extends \Doctrine\ORM\EntityRepository
 {
+	public function findByUserID($id)
+	{
+		$qb = $this->_em->createQueryBuilder('f');
+
+		$qb -> select('f')
+				->from('ApplicationBundle:Fraction', 'f')
+				->where('f.utilisateur = :id')
+				->setParameter('id', $id);
+
+		$requete = $qb->getQuery();
+
+		try
+		{
+			$result = $requete->getResult();
+		}
+		catch (\Doctrine\ORM\NoResultException $e)
+		{
+			$result = "NoResultException";
+		}
+
+		return $result;
+	}
 }
