@@ -120,7 +120,7 @@
         </div>
         {% block body %}
 
-            {{ dump(prenom) }}
+            {{ dump(fraction) }}
 
     <div class="container-fluid">
         <div class="col-lg-10">
@@ -142,11 +142,16 @@
                 data: {
                     datasets: [{
                         data: [
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor(),
-                            randomScalingFactor()
+                            //randomScalingFactor(),
+                            //randomScalingFactor(),
+                            //randomScalingFactor(),
+                            //randomScalingFactor(),
+                            //randomScalingFactor()
+                            {% for partition in fraction %}
+                              {{ partition.montant }}
+                            {% endfor %}
+
+
                         ],
                         backgroundColor: [
                             window.chartColors.red,
@@ -158,11 +163,9 @@
                         label: 'Dataset 1'
                     }],
                     labels: [
-                        "{{ prenom }}",
-                        "Orange",
-                        "Yellow",
-                        "Green",
-                        "Blue"
+                        {% for partition in fraction %}
+                            {{ partition.nom }}
+                        {% endfor %}
                     ]
                 },
                 options: {
@@ -209,7 +212,7 @@
 
                     var colorName = colorNames[index % colorNames.length];
                     var newColor = window.chartColors[colorName];
-                    newDataset.backgroundColor.push(newColor);
+                    newDataset.backgroundColor.push({{ fraction.1.couleur }});
                 }
 
                 config.data.datasets.push(newDataset);

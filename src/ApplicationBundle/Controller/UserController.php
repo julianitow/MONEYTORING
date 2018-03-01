@@ -38,9 +38,9 @@ class UserController extends Controller
     {
         $error = null; // pour éviter le "undefined variable error"
 
-        $user = new Utilisateur(); //création d' un objet utilisater vide 
+        $user = new Utilisateur(); //création d' un objet utilisater vide
 
-        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user); // Initisalisation du form builder 
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user); // Initisalisation du form builder
 
         //CREATION DU FORMULAIRE
         $formBuilder
@@ -89,7 +89,7 @@ class UserController extends Controller
             else
             {
                 $error = "NoResultException";
-            }           
+            }
         }
 
         return $this->render('@Application/User/connexion.html.twig', ['form'=> $form->createView(), 'utilisateur' => $user, 'error' => $error]);
@@ -99,13 +99,24 @@ class UserController extends Controller
     {
         $session = $request->getSession();
         $session->invalidate();
-        
+
         return $this->redirectToRoute('connexion');
     }
 
-    public function parametresUtilisateurAction()
+    public function parametresUtilisateurAction(Request $request)
     {
-        $error = null;
+        //VERIFICATION DE CONNEXION
+        $session = $request->getSession();
+        $id = $session->get('id');
+        $prenom = $session->get('prenom');
+         if ($id == null)
+        {
+            $error = "ConnexionNeeded";
+        }
+        else
+        {
+            $error = null;
+        }
 
         $user = new Utilisateur();
 
@@ -115,7 +126,7 @@ class UserController extends Controller
                 ->add('MotDePasseClair', RepeatedType::class, ['type' => PasswordType::class, 'first_options' => ['label'=> "Mot de passe", 'attr' => ['placeholder' => "Mot de Passe"]], 'second_options' => ['label'=> "Répetez mot de passe", 'attr' => ['placeholder' => "Vérification"]]]);
         $form = $formBuilder->getForm();
 
-        return $this->render('@Application/User/parametresUtilisateur.html.twig', ['form'=> $form->createView(), 'error'=> $error]);
+        return $this->render('@Application/User/parametresUtilisateur.html.twig', ['form'=> $form->createView(), 'prenom' => $prenom, 'error'=> $error]);
     }
 
     public function inscriptionAction(Request $request)
@@ -141,7 +152,7 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
-        {   
+        {
             $user = $form->getData();
             //HASHAGE
             $passwordEncoder = $this->get('security.password_encoder');
@@ -152,7 +163,7 @@ class UserController extends Controller
             $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
             $manager->persist($user);
 
-            try 
+            try
             {
                 $manager->flush();
                 return $this->redirectToRoute('connexion');
@@ -191,7 +202,7 @@ class UserController extends Controller
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid())
-        { 
+        {
 
             $user = $form->getData();
             //HASHAGE
@@ -224,7 +235,7 @@ class UserController extends Controller
 
                 $transport = (new \Swift_SmtpTransport('smtp.gmail.com', 587))
                             ->setUsername('moneytoring.iutbayonne@gmail.com')
-                            ->setPassword('moneytoring1997')    
+                            ->setPassword('moneytoring1997')
                             ->setEncryption('tls')
                                 ;
                 $mailer = new \Swift_Mailer($transport);
