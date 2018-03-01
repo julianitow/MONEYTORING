@@ -20,7 +20,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
-
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 
 
 class DefaultController extends Controller
@@ -45,6 +45,8 @@ class DefaultController extends Controller
         $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
         $partition = $repositoryFraction->findByUserID($id);
 
+        //TABLEAU DE PARTITIONS
+
         //FORMULAIRE DE CREATION DE MOUVEMENT
         $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $mouvement);
 
@@ -53,13 +55,17 @@ class DefaultController extends Controller
             ->add('montant', HiddenType::class, ['label'=>false, 'attr'=> ['placeholder' => "Montant du mouvement"]])
             ->add('type', ChoiceType::class, ['choices' => ['Sortie' => 'Sortie', 'Rentrée' => 'Rentree']])
             ->add('date', DateType::class, ['format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
-            ->add('fraction', ChoiceType::class,
-            ['choices' =>
-            []
-            ])
+            ->add('fraction', EntityType::class,['class' => 'ApplicationBundle:Fraction', 'choice_label' => 'nom'])
+            ->add('Créer', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']])
             ;
             $form = $formBuilder->getForm();
             $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid())
+            {
+              $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
+              //$partitionLiee = $repositoryMouvement->findOneByNom()
+            }
 
         return $this->render('@Application/Default/index.html.twig', ['form' => $form->createView(), 'id' => $id, 'prenom'=>$prenom, 'fraction'=>$partition, 'error' => $error]);
     }
