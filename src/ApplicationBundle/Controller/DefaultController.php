@@ -19,8 +19,11 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+
+//EXCEPTION
+use Doctrine\DBAL\DBALException;
 
 
 class DefaultController extends Controller
@@ -43,16 +46,36 @@ class DefaultController extends Controller
         $mouvement = new Mouvement();
         $manager = $this->getDoctrine()->getManager();
         $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
-        $partition = $repositoryFraction->findByUserID($id);
+        $partitions = $repositoryFraction->findByUserID($id);
+
+        //RECUPERATION DES MOUVEMENTS DES PARTITIONS LIEES
+        $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
+        $i = 0;
+        $montantPartition = 0;
+        foreach ($partitions as $partition)
+        {
+          $mouvements[$partitions[$i]->getId()] = $repositoryMouvement->findByFraction($partitions[$i]->getId());
+          foreach($mouvements[$partitions[$i]->getId()] as $mouvementCalc)
+          {
+            if ($mouvementCalc->getFraction()->getId() == $partitions[$i]->getId())
+            {
+              //$montantPartition[$mouvements[$partitions[$i]->getNom()]] += $mouvementCalc->getMontant();
+            }
+          }
+          $i++;
+        }
+
+        //CALCUL DU MONTANT DES PARTITIONS
 
         //TABLEAU DE PARTITIONS
+        $montant = null;
 
         //FORMULAIRE DE CREATION DE MOUVEMENT
         $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $mouvement);
 
         $formBuilder
             ->add('nom', TextType::class, ['label'=>false, 'attr' => ['placeholder' => "Nom Mouvement"]])
-            ->add('montant', HiddenType::class, ['label'=>false, 'attr'=> ['placeholder' => "Montant du mouvement"]])
+            ->add('montant', MoneyType::class, ['label' => false,  'attr'=>['placeholder' => "Montant"]])
             ->add('type', ChoiceType::class, ['choices' => ['Sortie' => 'Sortie', 'Rentrée' => 'Rentree']])
             ->add('date', DateType::class, ['format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
             ->add('fraction', EntityType::class,['class' => 'ApplicationBundle:Fraction', 'choice_label' => 'nom'])
@@ -64,10 +87,21 @@ class DefaultController extends Controller
             if($form->isSubmitted() && $form->isValid())
             {
               $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
-              //$partitionLiee = $repositoryMouvement->findOneByNom()
+              $mouvement = $form->getData();
+              try{
+                $montant = intval($montant);
+                $mouvement->setMontant($montant);
+                $manager->persist($mouvement);
+                //$manager->flush();
+              }
+              catch(DBALException $e)
+              {
+                $error = "DBALException";
+              }
+              //$partitionsLiee = $repositoryMouvement->findOneByNom()
             }
 
-        return $this->render('@Application/Default/index.html.twig', ['form' => $form->createView(), 'id' => $id, 'prenom'=>$prenom, 'fraction'=>$partition, 'error' => $error]);
+        return $this->render('@Application/Default/index.html.twig', ['form' => $form->createView(), 'montant' => $montant, 'id' => $id, 'prenom'=>$prenom, 'fractions'=>$partitions, 'mouvementCalc'=>$montantPartition,'mouvements' => $mouvements, 'error' => $error]);
     }
 
     public function partitionAction(Request $request)
@@ -155,3 +189,8 @@ class DefaultController extends Controller
         return $this->render('@Application/Default/aide.html.twig');
     }
 }
+
+//ludo : 6 gorgées sur pik
+//jojo : 3 grgées sur coeur
+//ju : 8 sur trefle
+//pduf 5 sur pik

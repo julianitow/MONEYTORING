@@ -145,7 +145,7 @@
                             //randomScalingFactor(),
                             //randomScalingFactor(),
                             //randomScalingFactor()
-                            {% for partition in fraction %}
+                            {% for partition in fractions %}
                               {{ partition.montant }},
                             {% endfor %}
 
@@ -161,7 +161,7 @@
                         label: 'Dataset 1'
                     }],
                     labels: [
-                        "{{ fraction.0.nom }}",
+                        "{{ fractions.0.nom }}",
                         "Orange",
                         "Yellow",
                         "Green",
@@ -212,7 +212,7 @@
 
                     var colorName = colorNames[index % colorNames.length];
                     var newColor = window.chartColors[colorName];
-                    newDataset.backgroundColor.push({{ fraction.1.couleur }});
+                    newDataset.backgroundColor.push({{ fractions.1.couleur }});
                 }
 
                 config.data.datasets.push(newDataset);
@@ -281,11 +281,69 @@
       </style>
 
         <div class="container">
+          {% if error == "DBALException" %}
+            <div class="alert alert-danger">
+              Le montant ne peut être nul.
+            </div>
+          {% endif %}
           <h3> Entrer un nouveau mouvement </h3>
+          {{ dump(montant) }}
           {{ form_start(form) }}
           {{ form_widget(form) }}
           {{ form_end(form) }}
         </div>
+    </div>
+    <div>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">
+              Mouvement
+            </th>
+            <th scope="col">
+              Nom
+            </th>
+            <th scope="col">
+              Montant
+            </th>
+            <th scope="col">
+              Date
+            </th>
+            <th scope="col">
+              Partition
+            </th>
+            <th scope="col">
+              Type
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for mouvement in mouvements %}
+            {% for mouv in mouvement %}
+              <tr>
+                <td scope="row">
+                  {{ mouv.id }}
+                </td>
+                <td scope="row">
+                  {{ mouv.nom }}
+                </td>
+                <td scope="row">
+                  {{ mouv.montant }}
+                </td>
+                <td scope="row">
+                  {{ mouv.date|date("d/m/Y") }}
+                </td>
+                <td scope="row">
+                  {{ mouv.fraction.nom }}
+                </td>
+                <td scope="row">
+                  {{ mouv.type }}
+                </td>
+              </tr>
+            {% endfor %}
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
 
     {% endblock %}
