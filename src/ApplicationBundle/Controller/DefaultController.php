@@ -89,10 +89,8 @@ class DefaultController extends Controller
               $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
               $mouvement = $form->getData();
               try{
-                $montant = intval($montant);
-                $mouvement->setMontant($montant);
                 $manager->persist($mouvement);
-                //$manager->flush();
+                $manager->flush();
               }
               catch(DBALException $e)
               {
