@@ -34,4 +34,16 @@ class FractionRepository extends \Doctrine\ORM\EntityRepository
 		return $result;
 	}
 
+	public function findAllByUserID($id)
+	{
+		$qb = $this->_em->createQueryBuilder('f');
+
+		$qb -> select('f')
+				->from('ApplicationBundle:Fraction', 'f')
+				->where('f.utilisateur = :id')
+				->setParameter('id', $id);
+		return $qb;
+	}
+
+
 }

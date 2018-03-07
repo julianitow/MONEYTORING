@@ -84,6 +84,7 @@ class UserController extends Controller
                  $session->set('id', $user->getId());
                  $session->set('prenom', $user->getPrenom());
                  $session->set('email', $user->getEmail());
+                 $session->set('budgetGlobal', $user->getBudgetGlobal());
 
                  return $this->redirectToRoute('application_homepage');
             }

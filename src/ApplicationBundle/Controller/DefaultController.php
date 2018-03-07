@@ -33,6 +33,8 @@ class DefaultController extends Controller
         $session = $request->getSession();
         $id = $session->get('id');
         $prenom = $session->get('prenom');
+        $budgetGlobal = $session->get('budgetGlobal');
+
          if ($id == null)
         {
             $error = "ConnexionNeeded";
@@ -50,35 +52,43 @@ class DefaultController extends Controller
 
         //RECUPERATION DES MOUVEMENTS DES PARTITIONS LIEES
         $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
-        $i = 0;
-        $montantPartition = 0;
+        $montant = null;
         foreach ($partitions as $partition)
         {
-          $mouvements[$partitions[$i]->getId()] = $repositoryMouvement->findByFraction($partitions[$i]->getId());
-          foreach($mouvements[$partitions[$i]->getId()] as $mouvementCalc)
-          {
-            if ($mouvementCalc->getFraction()->getId() == $partitions[$i]->getId())
-            {
-              //$montantPartition[$mouvements[$partitions[$i]->getNom()]] += $mouvementCalc->getMontant();
-            }
-          }
-          $i++;
+            $mouvements[$partition->getId()] = $repositoryMouvement->findByFraction($partition->getId());
+            $montant[$partition->getId()] = null;
+
+                foreach($mouvements[$partition->getId()] as $mouvementCalc)
+                {
+                  if ($mouvementCalc->getFraction()->getId() == $partition->getId())
+                  {
+                      $montant[$partition->getId()] += $mouvementCalc->getMontant();
+                      $budgetGlobal = $budgetGlobal-$mouvementCalc->getMontant();
+                  }
+                }
+        }
+        //Après l'inscription, comme aucun mouvement dans la base, pour éviter l'erreur
+        if (!(isset($mouvements)))
+        {
+          $mouvements = null;
         }
 
-        //CALCUL DU MONTANT DES PARTITIONS
+        $session->set('mouvements', $mouvements);
 
-        //TABLEAU DE PARTITIONS
-        $montant = null;
 
         //FORMULAIRE DE CREATION DE MOUVEMENT
         $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $mouvement);
 
         $formBuilder
             ->add('nom', TextType::class, ['label'=>false, 'attr' => ['placeholder' => "Nom Mouvement"]])
-            ->add('montant', MoneyType::class, ['label' => false,  'attr'=>['placeholder' => "Montant"]])
+            ->add('montant', MoneyType::class, ['label' => false, 'scale' => 4, 'attr'=>['placeholder' => "Montant"]])
             ->add('type', ChoiceType::class, ['choices' => ['Sortie' => 'Sortie', 'Rentrée' => 'Rentree']])
             ->add('date', DateType::class, ['format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
-            ->add('fraction', EntityType::class,['class' => 'ApplicationBundle:Fraction', 'choice_label' => 'nom'])
+            ->add('fraction', EntityType::class,['class' => 'ApplicationBundle:Fraction','query_builder' => function(\ApplicationBundle\Repository\FractionRepository $repo) use ($id)
+            {
+              return $repo->findAllByUserID($id);
+            }
+              , 'choice_label' => 'nom'])
             ->add('Créer', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']])
             ;
             $form = $formBuilder->getForm();
@@ -96,10 +106,9 @@ class DefaultController extends Controller
               {
                 $error = "DBALException";
               }
-              //$partitionsLiee = $repositoryMouvement->findOneByNom()
             }
 
-        return $this->render('@Application/Default/index.html.twig', ['form' => $form->createView(), 'montant' => $montant, 'id' => $id, 'prenom'=>$prenom, 'fractions'=>$partitions, 'mouvementCalc'=>$montantPartition,'mouvements' => $mouvements, 'error' => $error]);
+        return $this->render('@Application/Default/index.html.twig', ['form' => $form->createView(), 'montant' => $montant, 'id' => $id, 'prenom'=>$prenom, 'fractions'=>$partitions, 'budgetGlobal' => $budgetGlobal, 'mouvements' => $mouvements, 'error' => $error]);
     }
 
     public function partitionAction(Request $request)
@@ -109,6 +118,7 @@ class DefaultController extends Controller
         $id = $session->get('id');
         $prenom = $session->get('prenom');
         $email = $session->get('email');
+        $mouvements = $session->get('mouvements');
          if ($id == null)
         {
             $error = "ConnexionNeeded";
@@ -164,12 +174,15 @@ class DefaultController extends Controller
         }
 
 
-        return $this->render('@Application/Default/partition.html.twig', ['form' => $form->createView(), 'prenom' => $prenom, 'utilisateur' => $fraction, 'error'=>$error]);
+        return $this->render('@Application/Default/partition.html.twig', ['form' => $form->createView(), 'prenom' => $prenom, 'mouvements' => $mouvements, 'utilisateur' => $fraction, 'error'=>$error]);
     }
 
-    public function simulationAction()
+    public function simulationAction(Request $request)
     {
-        return $this->render('@Application/Default/simulation.html.twig');
+        $error = null;
+        $session = $request->getSession();
+        $prenom = $session->get('prenom');
+        return $this->render('@Application/Default/simulation.html.twig', ['prenom' => $prenom, 'error' => $error]);
     }
 
     public function entrerMouvementAction()

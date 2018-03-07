@@ -144,10 +144,11 @@
                             //randomScalingFactor(),
                             //randomScalingFactor(),
                             //randomScalingFactor(),
-                            //randomScalingFactor()
-                            {% for partition in fractions %}
-                              {{ partition.montant }},
+                            //randomScalingFactor(),
+                            {% for value in montant %}
+                              {{ value }},
                             {% endfor %}
+                            {{ budgetGlobal }}
 
 
                         ],
@@ -161,7 +162,9 @@
                         label: 'Dataset 1'
                     }],
                     labels: [
+                      {% if fractions != null %}
                         "{{ fractions.0.nom }}",
+                      {% endif %}
                         "Orange",
                         "Yellow",
                         "Green",
@@ -212,7 +215,7 @@
 
                     var colorName = colorNames[index % colorNames.length];
                     var newColor = window.chartColors[colorName];
-                    newDataset.backgroundColor.push({{ fractions.1.couleur }});
+                    newDataset.backgroundColor.push({% if fractions != null %}{{ fractions.0.couleur }}{% endif %});
                 }
 
                 config.data.datasets.push(newDataset);
@@ -286,6 +289,7 @@
               Le montant ne peut être nul.
             </div>
           {% endif %}
+          {{ dump(budgetGlobal) }}
           <h3> Entrer un nouveau mouvement </h3>
           {{ dump(montant) }}
           {{ form_start(form) }}
@@ -345,7 +349,6 @@
         </tbody>
       </table>
     </div>
-
     {% endblock %}
 
 </div>

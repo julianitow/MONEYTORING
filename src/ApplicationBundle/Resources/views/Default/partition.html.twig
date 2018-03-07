@@ -46,6 +46,7 @@
 {% endblock %}
 
 {% block body %}
+
   <style>
     .form-control-label
     {
@@ -86,6 +87,57 @@
   {{ form_widget(form) }}
   {{ form_end(form) }}
 </div>
-{{ dump(utilisateur) }}
+<div class="container">
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">
+          Mouvement
+        </th>
+        <th scope="col">
+          Nom
+        </th>
+        <th scope="col">
+          Montant
+        </th>
+        <th scope="col">
+          Date
+        </th>
+        <th scope="col">
+          Partition
+        </th>
+        <th scope="col">
+          Type
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for mouvement in mouvements %}
+        {% for mouv in mouvement %}
+          <tr>
+            <td scope="row">
+              {{ mouv.id }}
+            </td>
+            <td scope="row">
+              {{ mouv.nom }}
+            </td>
+            <td scope="row">
+              {{ mouv.montant }}
+            </td>
+            <td scope="row">
+              {{ mouv.date|date("d/m/Y") }}
+            </td>
+            <td scope="row">
+              {{ mouv.fraction.nom }}
+            </td>
+            <td scope="row">
+              {{ mouv.type }}
+            </td>
+          </tr>
+        {% endfor %}
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
 
 {% endblock %}

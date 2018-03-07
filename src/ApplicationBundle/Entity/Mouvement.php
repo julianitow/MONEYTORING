@@ -31,7 +31,7 @@ class Mouvement
     /**
      * @var int
      *
-     * @ORM\Column(name="montant", type="integer")
+     * @ORM\Column(name="montant", type="float")
      */
     private $montant;
 
