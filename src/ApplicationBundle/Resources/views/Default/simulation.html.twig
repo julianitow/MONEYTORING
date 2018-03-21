@@ -46,5 +46,56 @@
 {% endblock %}
 
 {% block body %}
+<style>
+  .progress{
+    margin-top: 10px;
+    height : 40px;
+  }
+  #progress2 {
+    margin-top: 10px;
+  }
+  h3{
+    margin-top: 50px;
+  }
+  #titreAvecProjet{
+    margin-top: 20px;
+  }
+</style>
+<h2></h2>
+<div class="container-fluid" style="margin-left:20px">
+  <div class="row">
+    <div class="col-sm-6">
+      <h3>Visualisation</h3>
+      {{ dump(projets) }}
+      <h4>Situation en cours :</h4>
+      <div class="progress" id="progress1">
+        {% for partition in fractions %}
+        <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
+          {{ partition.nom }}
+        </div>
+        {% endfor %}
+      </div>
+      <h4 id="titreAvecProjet">Situation avec projet :</h4>
+      <div class="progress" id="progress2">
+        {% for partition in fractions %}
+        <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
+          {{ partition.nom }}
+        </div>
+        {% endfor %}
+        {% for projet in projets %}
+        <div class="progress-bar" role="progressbar" style="width:{{ projet.montant }}%; background-color:gray">
+          {{ projet.nom }}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <h3>Projets de dépenses</h3>
+
+
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

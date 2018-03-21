@@ -54,7 +54,7 @@ class Projet
      *
      * @ORM\ManyToOne(targetEntity="ApplicationBundle\Entity\Utilisateur")
      */
-    private $utlisateur;
+    private $utilisateur;
 
     /**
      * Get id

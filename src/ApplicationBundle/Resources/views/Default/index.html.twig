@@ -113,6 +113,11 @@
 </nav>
 
 <!-- CONTENU -->
+{% if error == "nullBudget" %}
+  <div class="alert alert-danger">
+    ATTENTION VOTRE BUDGET A ETE DEPASSE.
+  </div>
+{% endif %}
 
 <div class="content-wrapper">
     <div class="row">
@@ -125,50 +130,34 @@
         <div id="canvas-holder" style="width:40%">
             <canvas id="chart-area" />
         </div>
-        <button id="randomizeData">Randomize Data</button>
-        <button id="addDataset">Add Dataset</button>
-        <button id="removeDataset">Remove Dataset</button>
-        <button id="addData">Add Data</button>
-        <button id="removeData">Remove Data</button>
-        <script>
-            var randomScalingFactor = function() {
-                return Math.round(Math.random() * 100);
-            };
 
+        <script>
             var config = {
                 type: 'doughnut',
                 data: {
                     datasets: [{
                         data: [
-                            //randomScalingFactor(),
-                            //randomScalingFactor(),
-                            //randomScalingFactor(),
-                            //randomScalingFactor(),
-                            //randomScalingFactor(),
                             {% for value in montant %}
                               {{ value }},
                             {% endfor %}
-                            {{ budgetGlobal }}
+                            {{ budgetRestant }}
 
 
                         ],
                         backgroundColor: [
-                            window.chartColors.red,
-                            window.chartColors.orange,
-                            window.chartColors.yellow,
-                            window.chartColors.green,
-                            window.chartColors.blue
+
+                            {% for partition in fractions %}
+                              window.chartColors.{{ partition.couleur }},
+                            {% endfor %}
                         ],
                         label: 'Dataset 1'
                     }],
                     labels: [
                       {% if fractions != null %}
-                        "{{ fractions.0.nom }}",
+                      {% for partition in fractions %}
+                        "{{ partition.nom }}",
+                      {% endfor %}
                       {% endif %}
-                        "Orange",
-                        "Yellow",
-                        "Green",
-                        "Blue"
                     ]
                 },
                 options: {
@@ -192,67 +181,9 @@
                 window.myDoughnut = new Chart(ctx, config);
             };
 
-            document.getElementById('randomizeData').addEventListener('click', function() {
-                config.data.datasets.forEach(function(dataset) {
-                    dataset.data = dataset.data.map(function() {
-                        return randomScalingFactor();
-                    });
-                });
 
-                window.myDoughnut.update();
-            });
 
-            var colorNames = Object.keys(window.chartColors);
-            document.getElementById('addDataset').addEventListener('click', function() {
-                var newDataset = {
-                    backgroundColor: [],
-                    data: [],
-                    label: 'New dataset ' + config.data.datasets.length
-                };
 
-                for (var index = 0; index < config.data.labels.length; ++index) {
-                    newDataset.data.push(randomScalingFactor());
-
-                    var colorName = colorNames[index % colorNames.length];
-                    var newColor = window.chartColors[colorName];
-                    newDataset.backgroundColor.push({% if fractions != null %}{{ fractions.0.couleur }}{% endif %});
-                }
-
-                config.data.datasets.push(newDataset);
-                window.myDoughnut.update();
-            });
-
-            document.getElementById('addData').addEventListener('click', function() {
-                if (config.data.datasets.length > 0) {
-                    config.data.labels.push('data #' + config.data.labels.length);
-
-                    var colorName = colorNames[config.data.datasets[0].data.length % colorNames.length];;
-                    var newColor = window.chartColors[colorName];
-
-                    config.data.datasets.forEach(function(dataset) {
-                        dataset.data.push(randomScalingFactor());
-                        dataset.backgroundColor.push(newColor);
-                    });
-
-                    window.myDoughnut.update();
-                }
-            });
-
-            document.getElementById('removeDataset').addEventListener('click', function() {
-                config.data.datasets.splice(0, 1);
-                window.myDoughnut.update();
-            });
-
-            document.getElementById('removeData').addEventListener('click', function() {
-                config.data.labels.splice(-1, 1); // remove the label first
-
-                config.data.datasets.forEach(function(dataset) {
-                    dataset.data.pop();
-                    dataset.backgroundColor.pop();
-                });
-
-                window.myDoughnut.update();
-            });
         </script>
         </div>
       </div>
@@ -289,12 +220,29 @@
               Le montant ne peut être nul.
             </div>
           {% endif %}
-          {{ dump(budgetGlobal) }}
+
           <h3> Entrer un nouveau mouvement </h3>
-          {{ dump(montant) }}
+
           {{ form_start(form) }}
           {{ form_widget(form) }}
           {{ form_end(form) }}
+
+          <script>
+            function itemChange() {
+              list = document.getElementById('form_type');
+              choix = list.options[list.selectedIndex].text;
+              if (choix == "Rentrée")
+              {
+                document.getElementById('form_fraction').disabled=true;
+                //location.reload();
+              }
+              else {
+                document.getElementById('form_fraction').disabled=false;
+              }
+              //location.reload();
+            }
+          </script>
+
         </div>
     </div>
     <div>

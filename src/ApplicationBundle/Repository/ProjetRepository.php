@@ -10,4 +10,27 @@ namespace ApplicationBundle\Repository;
  */
 class ProjetRepository extends \Doctrine\ORM\EntityRepository
 {
+
+  public function findByUserID($id)
+	{
+		$qb = $this->_em->createQueryBuilder('p');
+
+		$qb ->select('p')
+				->from('ApplicationBundle:Projet', 'p')
+				->where('p.utilisateur = :id')
+				->setParameter('id', $id);
+
+		$requete = $qb->getQuery();
+
+		try
+		{
+			$result = $requete->getResult();
+		}
+		catch (\Doctrine\ORM\NoResultException $e)
+		{
+			$result = "NoResultException";
+		}
+
+		return $result;
+	}
 }

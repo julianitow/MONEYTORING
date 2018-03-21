@@ -34,7 +34,7 @@ class Fraction
     /**
      * @var int
      *
-     * @ORM\Column(name="montant", type="integer")
+     * @ORM\Column(name="montant", type="float", nullable=true)
      */
     private $montant;
 

@@ -60,6 +60,7 @@ class Mouvement
      * @var fraction
      *
      * @ORM\ManyToOne(targetEntity="ApplicationBundle\Entity\Fraction")
+     * @ORM\JoinColumn(referencedColumnName="id", nullable=true)
      */
     private $fraction;
 

@@ -21,6 +21,8 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 
 //EXCEPTION
 use Doctrine\DBAL\DBALException;
@@ -53,6 +55,8 @@ class DefaultController extends Controller
         //RECUPERATION DES MOUVEMENTS DES PARTITIONS LIEES
         $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
         $montant = null;
+        $budgetRestant = $budgetGlobal;
+
         foreach ($partitions as $partition)
         {
             $mouvements[$partition->getId()] = $repositoryMouvement->findByFraction($partition->getId());
@@ -60,12 +64,25 @@ class DefaultController extends Controller
 
                 foreach($mouvements[$partition->getId()] as $mouvementCalc)
                 {
+                  if ($mouvementCalc->getType() == "Sortie")
+                  {
+                    $budgetRestant = $budgetRestant - $mouvementCalc->getMontant();
+                  }
+                  elseif ($mouvementCalc->getType() == "Rentree")
+                  {
+                    $budgetRestant = $budgetRestant + $mouvementCalc->getMontant();
+                  }
+
                   if ($mouvementCalc->getFraction()->getId() == $partition->getId())
                   {
                       $montant[$partition->getId()] += $mouvementCalc->getMontant();
-                      $budgetGlobal = $budgetGlobal-$mouvementCalc->getMontant();
                   }
                 }
+        }
+        //en cas de budget restant négatif
+        if ($budgetRestant <= 0)
+        {
+          $error = "nullBudget";
         }
         //Après l'inscription, comme aucun mouvement dans la base, pour éviter l'erreur
         if (!(isset($mouvements)))
@@ -74,21 +91,23 @@ class DefaultController extends Controller
         }
 
         $session->set('mouvements', $mouvements);
+        $session->set('montant', $montant);
+        $session->set('budgetGlobal', $budgetGlobal);
 
 
         //FORMULAIRE DE CREATION DE MOUVEMENT
         $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $mouvement);
 
         $formBuilder
-            ->add('nom', TextType::class, ['label'=>false, 'attr' => ['placeholder' => "Nom Mouvement"]])
-            ->add('montant', MoneyType::class, ['label' => false, 'scale' => 4, 'attr'=>['placeholder' => "Montant"]])
-            ->add('type', ChoiceType::class, ['choices' => ['Sortie' => 'Sortie', 'Rentrée' => 'Rentree']])
-            ->add('date', DateType::class, ['format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
-            ->add('fraction', EntityType::class,['class' => 'ApplicationBundle:Fraction','query_builder' => function(\ApplicationBundle\Repository\FractionRepository $repo) use ($id)
+            ->add('nom', TextType::class, ['label'=>'Nom', 'attr' => ['placeholder' => '"Cigarette"']])
+            ->add('montant', MoneyType::class, ['label' => 'Montant', 'currency' => null, 'scale' => 4, 'attr'=>['placeholder' => '"400"']])
+            ->add('date', DateType::class, ['label' => 'Date' , 'format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
+            ->add('type', ChoiceType::class, ['label' => 'Type', 'choices' => ['Sortie' => 'Sortie', 'Rentrée' => 'Rentree'], 'attr' =>["onchange"=>"itemChange()"]])
+            ->add('fraction', EntityType::class,['label' => 'Partition associée','class' => 'ApplicationBundle:Fraction','query_builder' => function(\ApplicationBundle\Repository\FractionRepository $repo) use ($id)
             {
               return $repo->findAllByUserID($id);
             }
-              , 'choice_label' => 'nom'])
+            , 'choice_label' => 'nom'])
             ->add('Créer', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']])
             ;
             $form = $formBuilder->getForm();
@@ -99,8 +118,10 @@ class DefaultController extends Controller
               $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
               $mouvement = $form->getData();
               try{
+                //application des changements en base de donnés
                 $manager->persist($mouvement);
                 $manager->flush();
+                return $this->redirectToRoute('application_homepage');
               }
               catch(DBALException $e)
               {
@@ -108,7 +129,7 @@ class DefaultController extends Controller
               }
             }
 
-        return $this->render('@Application/Default/index.html.twig', ['form' => $form->createView(), 'montant' => $montant, 'id' => $id, 'prenom'=>$prenom, 'fractions'=>$partitions, 'budgetGlobal' => $budgetGlobal, 'mouvements' => $mouvements, 'error' => $error]);
+        return $this->render('@Application/Default/index.html.twig', ['form' => $form->createView(), 'montant' => $montant, 'id' => $id, 'prenom'=>$prenom, 'fractions'=>$partitions, 'budgetRestant' => $budgetRestant, 'mouvements' => $mouvements, 'error' => $error]);
     }
 
     public function partitionAction(Request $request)
@@ -135,7 +156,7 @@ class DefaultController extends Controller
         //création du formulaire d'ajout
         $formBuilder
             ->add('nom', TextType::class, ['label'=>false, 'attr' => ['placeholder' => "Nom de la partition"]])
-            ->add('montant', TextType::class, ['label'=>false, 'attr' => ['placeholder' => "Montant de la partition"]])
+            //->add('montant', TextType::class, ['label'=>false, 'attr' => ['placeholder' => "Montant de la partition"]])
             ->add('couleur', ChoiceType::class, ['choices' => ['rouge' => 'red', 'bleu' => 'blue', 'jaune' => 'yellow', 'orange' => 'orange']])
             ->add('priorite', ChoiceType::class, ['choices' => ['1' => 1, '2' => 2, '3' => 3, '4' => 4, '5' => 5]])
             ->add('Créer', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']]);
@@ -181,8 +202,22 @@ class DefaultController extends Controller
     {
         $error = null;
         $session = $request->getSession();
+        $id = $session->get('id');
         $prenom = $session->get('prenom');
-        return $this->render('@Application/Default/simulation.html.twig', ['prenom' => $prenom, 'error' => $error]);
+        $montant = $session->get('montant');
+        $budgetGlobal = $session->get('budgetGlobal');
+
+        //RECUPERATION DES FRACTIONS:
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
+        $repositoryProjet = $manager->getRepository('ApplicationBundle:Projet');
+
+        $projets = $repositoryProjet->findByUserID($id);
+
+        $fractions = $repositoryFraction->findByUserID($id);
+
+
+        return $this->render('@Application/Default/simulation.html.twig', ['prenom' => $prenom, 'montant'=>$montant, 'budgetGlobal'=>$budgetGlobal, 'fractions' => $fractions, 'projets' => $projets, 'error' => $error]);
     }
 
     public function entrerMouvementAction()
@@ -195,9 +230,12 @@ class DefaultController extends Controller
         return $this->render('@Application/Default/modifierMouvement.html.twig');
     }
 
-    public function aideAction()
+    public function aideAction(Request $request)
     {
-        return $this->render('@Application/Default/aide.html.twig');
+        $session = $request->getSession();
+        $prenom = $session->get('prenom');
+        $error = null;
+        return $this->render('@Application/Default/aide.html.twig', ['prenom' => $prenom, 'error' => $error]);
     }
 }
 
