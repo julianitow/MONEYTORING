@@ -24,10 +24,11 @@
         }
         #tableScroll{
             height: 395px;
-            overflow:auto;
+            overflow: auto;
         }
         #headScroll{
-            position: relative;
+            position: page;
+            width: 100%;
         }
         td {
             border: 0.5px solid black;
@@ -134,6 +135,7 @@
 {% endif %}
 
 <div class="content-wrapper">
+    <div class="container-fluid">x
     <div class="row">
 
         {% block body %}
@@ -193,8 +195,7 @@
             </script>
         </div>
 
-        <div class="col-lg-7">
-            <div class="container-fluid" style="margin-top: 30px" id="tableScroll">
+        <div class="col-lg-7" style="margin-top: 30px" id="tableScroll">
                 <table class="table">
                     <thead class="thead-dark" id="headScroll" style="text-align: center">
                     <tr>
@@ -218,7 +219,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody class="container-fluid">
+                    <tbody>
                     {% for mouvement in mouvements %}
                         {% for mouv in mouvement %}
                             <tr>
@@ -245,7 +246,6 @@
                     {% endfor %}
                     </tbody>
                 </table>
-            </div>
         </div>
 
         <style>
@@ -278,7 +278,6 @@
     </div>
     <div class="row">
         <div class="col-lg-7">
-          <div class="container-fluid">
           {% if error == "DBALException" %}
             <div class="alert alert-danger">
               Le montant ne peut être nul.
@@ -306,12 +305,12 @@
               //location.reload();
             }
           </script>
-          </div>
         </div>
     </div>
 
     {% endblock %}
 
+</div>
 </div>
 </body>
 <footer>
