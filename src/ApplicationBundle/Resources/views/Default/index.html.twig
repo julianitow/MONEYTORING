@@ -127,7 +127,7 @@
 
     <div class="container-fluid">
         <div class="col-lg-10">
-        <div id="canvas-holder" style="width:40%">
+        <div id="canvas-holder" style="width:60%">
             <canvas id="chart-area" />
         </div>
 
@@ -167,7 +167,7 @@
                     },
                     title: {
                         display: true,
-                        text: 'Chart.js Doughnut Chart'
+                        text: 'Etat des finances'
                     },
                     animation: {
                         animateScale: true,
@@ -222,7 +222,7 @@
           {% endif %}
 
           <h3> Entrer un nouveau mouvement </h3>
-
+          <!-- Formulaire de création de mouvement-->
           {{ form_start(form) }}
           {{ form_widget(form) }}
           {{ form_end(form) }}

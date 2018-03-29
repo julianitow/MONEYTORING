@@ -5,6 +5,7 @@ namespace ApplicationBundle\Controller;
 use ApplicationBundle\Entity\Utilisateur;
 use ApplicationBundle\Entity\Fraction;
 use ApplicationBundle\Entity\Mouvement;
+use ApplicationBundle\Entity\Projet;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -64,6 +65,7 @@ class DefaultController extends Controller
 
                 foreach($mouvements[$partition->getId()] as $mouvementCalc)
                 {
+                  var_dump($mouvementCalc->getType());
                   if ($mouvementCalc->getType() == "Sortie")
                   {
                     $budgetRestant = $budgetRestant - $mouvementCalc->getMontant();
@@ -99,7 +101,7 @@ class DefaultController extends Controller
         $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $mouvement);
 
         $formBuilder
-            ->add('nom', TextType::class, ['label'=>'Nom', 'attr' => ['placeholder' => '"Cigarette"']])
+            ->add('nom', TextType::class, ['label'=>'Nom', 'attr' => ['placeholder' => '"Changement pneus"']])
             ->add('montant', MoneyType::class, ['label' => 'Montant', 'currency' => null, 'scale' => 4, 'attr'=>['placeholder' => '"400"']])
             ->add('date', DateType::class, ['label' => 'Date' , 'format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
             ->add('type', ChoiceType::class, ['label' => 'Type', 'choices' => ['Sortie' => 'Sortie', 'Rentrée' => 'Rentree'], 'attr' =>["onchange"=>"itemChange()"]])
@@ -179,6 +181,12 @@ class DefaultController extends Controller
           //LIAISON DE L'UTILISATEUR
           $fraction->setUtilisateur($utilisateurLie);
 
+          //CONDITION SI MOUVEMENT DE RENTREE
+          /*if ($fraction->getType() == "Rentree")
+          {
+            $fraction->setFraction(0);
+          }*/
+
           //APPLICATION DANS LA BASE DE DONNEES
           $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
           $manager->persist($fraction);
@@ -212,12 +220,40 @@ class DefaultController extends Controller
         $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
         $repositoryProjet = $manager->getRepository('ApplicationBundle:Projet');
 
+        $projet = new Projet();
+
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $projet);
+
+        //BOUTON DE PROGRAMMATION D'UN PROJET
+        $formBuilder
+            ->add('nom', EntityType::class,['label' => 'Projet à afficher : ','class' => 'ApplicationBundle:Projet','query_builder' => function(\ApplicationBundle\Repository\ProjetRepository $repo) use ($id)
+            {
+              return $repo->findAllByUserID($id);
+            }
+            , 'choice_label' => 'nom'])
+            ->add('Programmer', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']]);
+
+            ;
+
+        $formProgrammer = $formBuilder->getForm();
+        $formProgrammer->handleRequest($request);
+
+        if ($formProgrammer->isSubmitted() && $formProgrammer->isValid())
+        {
+          $projetSelectionne = $formProgrammer->getData();
+        }
+
         $projets = $repositoryProjet->findByUserID($id);
 
         $fractions = $repositoryFraction->findByUserID($id);
 
+        //APRES ISNCRIPTION VERIFICATION DE L'EXISTANCE DE PROJET(S)
+        if (!(isset($projetSelectionne)))
+        {
+          $projetSelectionne = null;
+        }
 
-        return $this->render('@Application/Default/simulation.html.twig', ['prenom' => $prenom, 'montant'=>$montant, 'budgetGlobal'=>$budgetGlobal, 'fractions' => $fractions, 'projets' => $projets, 'error' => $error]);
+        return $this->render('@Application/Default/simulation.html.twig', ['formProgrammer' => $formProgrammer->createView(), 'prenom' => $prenom, 'montant'=>$montant, 'budgetGlobal'=>$budgetGlobal, 'fractions' => $fractions, 'projetSelectionne' => $projetSelectionne, 'projets' => $projets, 'error' => $error]);
     }
 
     public function entrerMouvementAction()
