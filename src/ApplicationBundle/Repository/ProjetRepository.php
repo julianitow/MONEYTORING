@@ -33,4 +33,14 @@ class ProjetRepository extends \Doctrine\ORM\EntityRepository
 
 		return $result;
 	}
+  public function findAllByUserID($id)
+	{
+		$qb = $this->_em->createQueryBuilder('p');
+
+		$qb -> select('p')
+				->from('ApplicationBundle:Projet', 'p')
+				->where('p.utilisateur = :id')
+				->setParameter('id', $id);
+		return $qb;
+	}
 }

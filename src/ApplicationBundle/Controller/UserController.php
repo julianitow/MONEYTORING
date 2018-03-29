@@ -6,6 +6,7 @@ namespace ApplicationBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ApplicationBundle\Entity\Utilisateur;
+use ApplicationBundle\Entity\Fraction;
 use Doctrine\ORM\NoResultException;
 
 //CONTENU FORMULAIRE
@@ -139,7 +140,17 @@ class UserController extends Controller
 
             $manager = $this->getDoctrine()->getManager();
             $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
+            //CREATION D'UNE FRACTION PAR DEFAUT POUR LE BUDGET RESTANT
+            $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
+            $fractionBudgetRestant = new Fraction();
+            $fractionBudgetRestant->setNom("Budget Restant");
+            $fractionBudgetRestant->setMontant($user->getBudgetGlobal());
+            $fractionBudgetRestant->setCouleur("gray");
+            $fractionBudgetRestant->setPriorite(5);
+            $fractionBudgetRestant->setUtilisateur($user);
+
             $manager->persist($user);
+            $manager->persist($fractionBudgetRestant);
 
             try
             {
