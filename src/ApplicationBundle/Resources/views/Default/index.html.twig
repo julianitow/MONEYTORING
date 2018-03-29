@@ -22,6 +22,28 @@
             width: 100%;
             border-collapse: collapse;
         }
+        td {
+            border: 0.5px solid black;
+        }
+        h3 {
+            margin-top: 20px;
+            margin-left: 30px;
+        }
+        .form-control-label {
+            margin-left: 30px;
+        }
+        .col-form-legend {
+            margin-left: 30px;
+        }
+        .form-control{
+            margin-left: 30px;
+        }
+        .btn {
+            margin-left: 30px;
+        }
+        .alert {
+            margin-top: 20px;
+        }
         #tableScroll{
             height: 395px;
             overflow: auto;
@@ -30,9 +52,13 @@
             position: page;
             width: 100%;
         }
-        td {
-            border: 0.5px solid black;
+        #position{
+            align-content: center;
         }
+        #canvas-holder{
+            
+        }
+
     </style>
 
     {% block title %}
@@ -135,14 +161,14 @@
 {% endif %}
 
 <div class="content-wrapper">
-    <div class="container-fluid">x
+    <div class="container-fluid">
     <div class="row">
 
         {% block body %}
 
-        <div class="col-lg-5">
-            <div id="canvas-holder" style="width:125%">
-                <canvas id="chart-area" style="margin-top: 30px"/>
+        <div class="col-lg-5" id="position">
+            <div id="canvas-holder">
+                <canvas id="chart-area" style="margin-top: 30px" height="10" width="10"></canvas>
             </div>
 
         <script>
@@ -248,36 +274,9 @@
                 </table>
         </div>
 
-        <style>
-        .form-control-label
-        {
-          margin-left: 50px;
-        }
-        .col-form-legend
-        {
-          margin-left: 50px;
-        }
-        .form-control{
-            margin-top: 20px;
-            margin-left: 50px;
-        }
-        h3 {
-          margin-top: 75px;
-          margin-left: 50px;
-        }
-        .btn
-        {
-          margin-left: 50px;
-        }
-        .alert
-        {
-          margin-top: 30px;
-        }
-      </style>
-
     </div>
     <div class="row">
-        <div class="col-lg-7">
+        <div class="col-lg-5">
           {% if error == "DBALException" %}
             <div class="alert alert-danger">
               Le montant ne peut être nul.
