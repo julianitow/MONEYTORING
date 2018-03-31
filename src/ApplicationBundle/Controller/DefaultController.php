@@ -65,7 +65,6 @@ class DefaultController extends Controller
 
                 foreach($mouvements[$partition->getId()] as $mouvementCalc)
                 {
-                  var_dump($mouvementCalc->getType());
                   if ($mouvementCalc->getType() == "Sortie")
                   {
                     $budgetRestant = $budgetRestant - $mouvementCalc->getMontant();
