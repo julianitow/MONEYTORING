@@ -1,6 +1,7 @@
 <?php
 
 namespace ApplicationBundle\Repository;
+use Doctrine\ORM\NoResultException;
 
 /**
  * MouvementRepository
@@ -10,4 +11,26 @@ namespace ApplicationBundle\Repository;
  */
 class MouvementRepository extends \Doctrine\ORM\EntityRepository
 {
+  public function findByFraction($id)
+  {
+    $qb = $this->_em->createQueryBuilder('m');
+
+    $qb -> select('m')
+        ->from('ApplicationBundle:Mouvement', 'm')
+        ->where('m.fraction = :id')
+        ->setParameter('id', $id);
+
+    $requete = $qb->getQuery();
+
+    try
+		{
+			$result = $requete->getResult();
+		}
+		catch (\Doctrine\ORM\NoResultException $e)
+		{
+			$result = "NoResultException";
+		}
+
+		return $result;
+  }
 }

@@ -46,5 +46,48 @@
 {% endblock %}
 
 {% block body %}
+    <style>
+        h1
+        {
+            margin-top: 50px;
+            margin-left: -50px;
+        }
+
+        p{
+            margin-top: 120px;
+            margin-left: -510px;
+        }
+
+        h2
+        {
+            margin-top: 250px;
+            margin-left: -490px;
+        }
+
+        p1{
+            margin-top: 300px;
+            margin-left: -620px;
+        }
+    </style>
+
+    <h1>Vos questions, nos réponses...</h1><br>
+
+    <p>
+        <a href="/pictures/Graphique.png" onclick="window.open(this.href,'nom fenêtre', 'height=300, width=400'); return(false);">Je veux changer mon mot de passe, comment faire ?</a>
+        <br>
+        <a href="/pictures/Graphique.png" onclick="window.open(this.href,'nom fenêtre', 'height=300, width=400'); return(false);">Je veux changer mon adresse email, comment faire ?</a>
+        <br>
+        <a href="/pictures/Graphique.png" onclick="window.open(this.href,'nom fenêtre', 'height=300, width=400'); return(false);">Votre application ne m'intéresse plus, comment faire ?</a>
+        <br>
+        <a href="/pictures/Graphique.png" onclick="window.open(this.href,'nom fenêtre', 'height=300, width=400'); return(false);">Je suis daltonien je ne vois pas bien les couleurs, comment faire ?</a>
+        <br>
+    </p>
+
+    <h2>Vous rencontrez des problèmes techniques ?</h2>
+
+    <p1>
+        <a href="https://github.com/julien-guillan/MONEYTORING/issues" onclick="window.open(this.href,'nom fenêtre', 'height=500, width=700'); return(false);">Contactez-nous ou signalez-nous un bug !</a>
+        <br>
+    </p1>
 
 {% endblock %}

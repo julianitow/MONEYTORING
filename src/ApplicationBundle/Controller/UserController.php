@@ -6,6 +6,7 @@ namespace ApplicationBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ApplicationBundle\Entity\Utilisateur;
+use ApplicationBundle\Entity\Fraction;
 use Doctrine\ORM\NoResultException;
 
 //CONTENU FORMULAIRE
@@ -22,6 +23,7 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 
 
 //POUR ENCODAGE PASSWORD
@@ -83,6 +85,8 @@ class UserController extends Controller
                  $session = new session();
                  $session->set('id', $user->getId());
                  $session->set('prenom', $user->getPrenom());
+                 $session->set('email', $user->getEmail());
+                 $session->set('budgetGlobal', $user->getBudgetGlobal());
 
                  return $this->redirectToRoute('application_homepage');
             }
@@ -103,32 +107,6 @@ class UserController extends Controller
         return $this->redirectToRoute('connexion');
     }
 
-    public function parametresUtilisateurAction(Request $request)
-    {
-        //VERIFICATION DE CONNEXION
-        $session = $request->getSession();
-        $id = $session->get('id');
-        $prenom = $session->get('prenom');
-         if ($id == null)
-        {
-            $error = "ConnexionNeeded";
-        }
-        else
-        {
-            $error = null;
-        }
-
-        $user = new Utilisateur();
-
-        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
-
-        $formBuilder
-                ->add('MotDePasseClair', RepeatedType::class, ['type' => PasswordType::class, 'first_options' => ['label'=> "Mot de passe", 'attr' => ['placeholder' => "Mot de Passe"]], 'second_options' => ['label'=> "Répetez mot de passe", 'attr' => ['placeholder' => "Vérification"]]]);
-        $form = $formBuilder->getForm();
-
-        return $this->render('@Application/User/parametresUtilisateur.html.twig', ['form'=> $form->createView(), 'prenom' => $prenom, 'error'=> $error]);
-    }
-
     public function inscriptionAction(Request $request)
     {
         $error = null;
@@ -143,6 +121,7 @@ class UserController extends Controller
             ->add('email', EmailType::class, ['label'=> false, 'attr' => ['placeholder'=> "Adresse e-mail"]])
             ->add('dateNaiss', BirthdayType::class, ['label'=> "Date de naissance : ", 'format' => 'dd-MM-yyyy'])
             ->add('MotDePasseClair', RepeatedType::class, ['type' => PasswordType::class, 'first_options' => ['label'=> "Mot de passe", 'attr' => ['placeholder' => "Mot de Passe"]], 'second_options' => ['label'=> "Répetez mot de passe", 'attr' => ['placeholder' => "Vérification"]]])
+            ->add('budgetGlobal', MoneyType::class , ['label' => false, 'currency' => null,'scale' => 4, 'attr'=>['placeholder' => "Solde disponible"]])
             ->add('Inscription', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']] );
 
 
@@ -161,7 +140,17 @@ class UserController extends Controller
 
             $manager = $this->getDoctrine()->getManager();
             $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
+            //CREATION D'UNE FRACTION PAR DEFAUT POUR LE BUDGET RESTANT
+            $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
+            $fractionBudgetRestant = new Fraction();
+            $fractionBudgetRestant->setNom("Budget Restant");
+            $fractionBudgetRestant->setMontant($user->getBudgetGlobal());
+            $fractionBudgetRestant->setCouleur("gray");
+            $fractionBudgetRestant->setPriorite(5);
+            $fractionBudgetRestant->setUtilisateur($user);
+
             $manager->persist($user);
+            $manager->persist($fractionBudgetRestant);
 
             try
             {
@@ -264,5 +253,67 @@ class UserController extends Controller
 
         return $this->render('@Application/User/reinitialisation.html.twig', ['form'=> $form->createView(), 'error' => $error]);
 
+    }
+
+    public function parametresUtilisateurAction(Request $request)
+    {
+        //VERIFICATION DE CONNEXION
+        $session = $request->getSession();
+        $id = $session->get('id');
+        $prenom = $session->get('prenom');
+        $email = $session->get('email');
+         if ($id == null)
+        {
+            $error = "ConnexionNeeded";
+        }
+        else
+        {
+            $error = null;
+        }
+
+        $user = new Utilisateur();
+        $utilisateur = null;
+
+        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
+
+        $formBuilder
+                ->add('MotDePasseClair', RepeatedType::class, ['type' => PasswordType::class, 'first_options' => ['label'=> "Mot de passe", 'attr' => ['placeholder' => "Mot de Passe"]], 'second_options' => ['label'=> "Répetez mot de passe", 'attr' => ['placeholder' => "Vérification"]]])
+                ->add('Changer mot de passe', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']]);
+        $form = $formBuilder->getForm();
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+          $user = $form->getData();
+          $manager = $this->getDoctrine()->getManager();
+          $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
+
+          $password = $user->getMotDePasseClair();
+
+          //encodage du mot de passe :
+          $passwordEncoder = $this->get('security.password_encoder');
+          $motDePasse = $passwordEncoder->encodePassword($user, $password);
+
+          $utilisateur = $repositoryUsers->findOneByEmail($email);
+          $utilisateur->setMotDePasse($motDePasse);
+
+          try
+          {
+              $manager->flush();
+              return $this->redirectToRoute('connexion');
+          }
+          catch (PDOException $e)
+          {
+              $error = "UniqueConstraintViolationException";
+          }
+          catch (UniqueConstraintViolationException $e)
+          {
+              $error = "UniqueConstraintViolationException";
+
+          }
+        }
+
+        return $this->render('@Application/User/parametresUtilisateur.html.twig', ['form'=> $form->createView(), 'prenom' => $prenom, 'error'=> $error, 'user'=>$utilisateur]);
     }
 }

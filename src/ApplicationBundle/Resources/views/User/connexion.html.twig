@@ -10,14 +10,13 @@
                 <div class="alert alert-danger">
                         Identifiant ou mot de passe incorrect
                 </div>
-            
+
             {% elseif error == "NoError" %}
                 <div class="alert alert-success">
                     Connexion réussie
                 </div>
-                <!--<meta http-equiv="refresh" content="3", url="/">-->
             {% endif %}
-            
+
             {{ form_start(form) }}
             {{ form_widget(form) }}
             {{ form_end(form) }}

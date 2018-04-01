@@ -2,7 +2,7 @@
 
 namespace ApplicationBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;    
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * fraction
@@ -27,14 +27,14 @@ class Fraction
     /**
      * @var string
      *
-     * @ORM\Column(name="nom", type="string", length=50, unique=true)
+     * @ORM\Column(name="nom", type="string", length=50, unique=false)
      */
     private $nom;
 
     /**
      * @var int
      *
-     * @ORM\Column(name="montant", type="integer")
+     * @ORM\Column(name="montant", type="float", nullable=true)
      */
     private $montant;
 
@@ -58,13 +58,6 @@ class Fraction
      * @ORM\ManyToOne(targetEntity="ApplicationBundle\Entity\Utilisateur")
      */
     private $utilisateur;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="categorie", type="string", length=30)
-     */
-    private $categorie;
 
     /**
      * Get id
