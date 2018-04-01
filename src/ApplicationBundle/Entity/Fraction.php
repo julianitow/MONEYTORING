@@ -60,6 +60,13 @@ class Fraction
     private $utilisateur;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="categorie", type="string", length=30)
+     */
+    private $categorie;
+
+    /**
      * Get id
      *
      * @return int

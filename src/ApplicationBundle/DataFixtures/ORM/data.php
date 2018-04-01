@@ -29,6 +29,7 @@ use Doctrine\Common\Persistence\ObjectManager;
             $partition->setMontant(100);
             $partition->setCouleur('#097867');
             $partition->setPriorite(1);
+            $partition->setCategorie("fraction");
 
             $manager->persist($partition);
 
@@ -37,6 +38,7 @@ use Doctrine\Common\Persistence\ObjectManager;
             $sousPartition->setMontant(50);
             $sousPartition->setCouleur('#098767');
             $sousPartition->setPriorite(1);
+            $partition->setCategorie("sousFraction");
 
             $manager->persist($sousPartition);
 

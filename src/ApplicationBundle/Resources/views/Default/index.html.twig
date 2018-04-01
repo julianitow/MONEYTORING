@@ -148,7 +148,9 @@
                             //randomScalingFactor(),
                             //randomScalingFactor()
                             {% for partition in fraction %}
-                              {{ partition.montant }}
+                                {% if partition.categorie == "fraction" %}
+                                     {{ partition.montant }},
+                                {% endif %}
                             {% endfor %}
 
 
@@ -164,7 +166,7 @@
                     }],
                     labels: [
                         {% for partition in fraction %}
-                            {{ partition.nom }}
+                        "{{ partition.nom }}",
                         {% endfor %}
                     ]
                 },
@@ -175,7 +177,7 @@
                     },
                     title: {
                         display: true,
-                        text: 'Chart.js Doughnut Chart'
+                        text: 'Diagramme des Partitions'
                     },
                     animation: {
                         animateScale: true,
@@ -212,7 +214,7 @@
 
                     var colorName = colorNames[index % colorNames.length];
                     var newColor = window.chartColors[colorName];
-                    newDataset.backgroundColor.push({{ fraction.1.couleur }});
+                    newDataset.backgroundColor.push({{ fraction.0.couleur }});
                 }
 
                 config.data.datasets.push(newDataset);
@@ -253,10 +255,6 @@
         </script>
         </div>
       </div>
-
-        <div class="col-lg-1">
-            col 3
-        </div>
     </div>
 
     {% endblock %}
