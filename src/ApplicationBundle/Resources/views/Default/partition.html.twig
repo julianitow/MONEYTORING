@@ -44,12 +44,8 @@
   <style>
 
     h3 {
-      margin-top: 40px;
-      margin-bottom: 40px;
-    }
-    .alert
-    {
       margin-top: 30px;
+      margin-bottom: 40px;
     }
     .form-control-label {
         margin-right: 30px;
@@ -80,13 +76,14 @@
 
 
 <div class="row">
-    <div class="col-sm-4" style="margin-top: 30px">
-        <h3>Créer nouvelle partition</h3>
+
+    <div class="col-sm-5" style="margin-top: 30px">
+        <h3>Créer une nouvelle partition</h3>
         {{ form_start(form) }}
         {{ form_widget(form) }}
         {{ form_end(form) }}
     </div>
-    <div class="col-sm-1"></div>
+
     <div class="col-sm-7" style="margin-top: 60px" id="tableScroll">
         <table class="table table-striped">
             <thead class="thead-dark" id="headScroll" style="text-align: center">
