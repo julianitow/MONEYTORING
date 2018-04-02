@@ -273,8 +273,3 @@ class DefaultController extends Controller
         return $this->render('@Application/Default/aide.html.twig', ['prenom' => $prenom, 'error' => $error]);
     }
 }
-
-//ludo : 6 gorgées sur pik
-//jojo : 3 grgées sur coeur
-//ju : 8 sur trefle
-//pduf 5 sur pik
