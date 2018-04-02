@@ -42,7 +42,7 @@ class DefaultController extends Controller
          if ($id == null)
         {
             $error = "ConnexionNeeded";
-            return $this->redirect("accueil", 308);
+            //return $this->redirect("accueil", 308);
         }
         else
         {
@@ -58,11 +58,12 @@ class DefaultController extends Controller
         //RECUPERATION DES MOUVEMENTS DES PARTITIONS LIEES
         $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
         $montant = null;
-        if ($partitions[0]->getNom() == "Budget Restant")
+      /*  if ($partitions[0]->getNom() == "Budget Restant")
         {
           $budgetRestant = $partitions[0]->getMontant();
           $partitionBudgetRestant = $partitions[0];
-        }
+        }*/
+        $budgetRestant = $budgetGlobal;
         foreach ($partitions as $partition)
         {
             $mouvements[$partition->getId()] = $repositoryMouvement->findByFraction($partition->getId());
@@ -72,7 +73,8 @@ class DefaultController extends Controller
                   if ($mouvementCalc->getType() == "Sortie")
                   {
 
-                    $budgetRestant = $budgetRestant - $partition->getMontant();
+                    $budgetRestant = $budgetRestant - $mouvementCalc->getMontant();
+
                     //$budgetRestant = $budgetRestant - $mouvementCalc->getMontant();
                     //DIMINUTION DE LA PARTITION BUDGET RESTANT
                     //Recupération de la partition
@@ -82,18 +84,18 @@ class DefaultController extends Controller
                     $budgetRestant = $budgetRestant + $mouvementCalc->getMontant();
                     //AUGMENTATION DE LA PARTITION BUDGET RESTANT
 
-                    $modifFraction = $mouvementCalc->setFraction($partitionBudgetRestant);
+                    /*$modifFraction = $mouvementCalc->setFraction($partitionBudgetRestant);
                     $modifFraction2 = $partitionBudgetRestant->setMontant($budgetRestant);
 
                     $manager->persist($modifFraction);
-                    $manager->persist($modifFraction2);
+                    $manager->persist($modifFraction2);*/
                   }
-/*
                   if ($mouvementCalc->getFraction()->getId() == $partition->getId())
                   {
                       $montant[$partition->getId()] += $mouvementCalc->getMontant();
-                  }*/
+                  }
                 }
+              
         }
         $manager->flush();
         //en cas de budget restant négatif

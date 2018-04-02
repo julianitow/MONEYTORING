@@ -24,12 +24,6 @@
                 <span class="nav-link-text">Simulateur</span>
             </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Entrer mouvement">
-            <a class="nav-link" href="{{ path('entrerMouvement') }}">
-                <i class="fa fa-fw fa-table"></i>
-                <span class="nav-link-text">Entrer mouvement</span>
-            </a>
-        </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
             <a class="nav-link" href="{{ path('modifierMouvement') }}">
                 <i class="fa fa-fw fa-table"></i>
@@ -48,27 +42,27 @@
 {% block body %}
 
   <style>
-    .form-control-label
-    {
-      margin-left: 50px;
+
+    h3 {
+      margin-top: 30px;
+      margin-bottom: 40px;
+    }
+    .form-control-label {
+        margin-right: 30px;
+    }
+    .col-form-legend {
+        margin-right: 30px;
     }
     .form-control{
-        margin-left:50px;
+        margin-right: 30px;
     }
-    h3 {
-      margin-top: 75px;
-      margin-left: 50px;
-    }
-    .btn
-    {
-      margin-left: 50px;
-    }
-    .alert
-    {
-      margin-top: 30px;
+    .btn {
+        margin-left: 30px;
     }
   </style>
-<div class="container">
+
+    <div class="container-fluid">
+
   {% if error == "ConstraintViolationException" %}
     <div class="alert alert-danger">
       Erreur : Nom de partition déja attribué.
@@ -78,66 +72,71 @@
       Partition créée avec succès.
     </div>
   {% endif %}
+
+
+
+<div class="row">
+
+    <div class="col-sm-5" style="margin-top: 30px">
+        <h3>Créer une nouvelle partition</h3>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+    </div>
+
+    <div class="col-sm-7" style="margin-top: 60px" id="tableScroll">
+        <table class="table table-striped">
+            <thead class="thead-dark" id="headScroll" style="text-align: center">
+                <tr>
+                    <th scope="col">
+                        Mouvement
+                    </th>
+                    <th scope="col">
+                        Nom
+                    </th>
+                    <th scope="col">
+                        Montant
+                    </th>
+                    <th scope="col">
+                        Date
+                    </th>
+                    <th scope="col">
+                        Partition
+                    </th>
+                    <th scope="col">
+                        Type
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for mouvement in mouvements %}
+                    {% for mouv in mouvement %}
+                        <tr>
+                            <td scope="row">
+                                {{ mouv.id }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.nom }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.montant }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.date|date("d/m/Y") }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.fraction.nom }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.type }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
-<div class="col-lg-10">
-  <h3>Créer nouvelle partition</h3>
-</div>
-<div class="col-lg-10">
-  {{ form_start(form) }}
-  {{ form_widget(form) }}
-  {{ form_end(form) }}
-</div>
-<div class="container">
-  <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">
-          Mouvement
-        </th>
-        <th scope="col">
-          Nom
-        </th>
-        <th scope="col">
-          Montant
-        </th>
-        <th scope="col">
-          Date
-        </th>
-        <th scope="col">
-          Partition
-        </th>
-        <th scope="col">
-          Type
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for mouvement in mouvements %}
-        {% for mouv in mouvement %}
-          <tr>
-            <td scope="row">
-              {{ mouv.id }}
-            </td>
-            <td scope="row">
-              {{ mouv.nom }}
-            </td>
-            <td scope="row">
-              {{ mouv.montant }}
-            </td>
-            <td scope="row">
-              {{ mouv.date|date("d/m/Y") }}
-            </td>
-            <td scope="row">
-              {{ mouv.fraction.nom }}
-            </td>
-            <td scope="row">
-              {{ mouv.type }}
-            </td>
-          </tr>
-        {% endfor %}
-      {% endfor %}
-    </tbody>
-  </table>
 </div>
 
 {% endblock %}

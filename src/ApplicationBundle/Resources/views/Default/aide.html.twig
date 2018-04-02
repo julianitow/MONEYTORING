@@ -24,12 +24,6 @@
                 <span class="nav-link-text">Simulateur</span>
             </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Entrer mouvement">
-            <a class="nav-link" href="{{ path('entrerMouvement') }}">
-                <i class="fa fa-fw fa-table"></i>
-                <span class="nav-link-text">Entrer mouvement</span>
-            </a>
-        </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
             <a class="nav-link" href="{{ path('modifierMouvement') }}">
                 <i class="fa fa-fw fa-table"></i>
@@ -46,48 +40,38 @@
 {% endblock %}
 
 {% block body %}
-    <style>
-        h1
-        {
-            margin-top: 50px;
-            margin-left: -50px;
-        }
 
-        p{
-            margin-top: 120px;
-            margin-left: -510px;
-        }
+<div class="container-fluid" style="margin-top: 20px">
 
-        h2
-        {
-            margin-top: 250px;
-            margin-left: -490px;
-        }
+    <h3 style="color: lightslategrey;">Vos questions, nos réponses...</h3><br>
 
-        p1{
-            margin-top: 300px;
-            margin-left: -620px;
-        }
-    </style>
+        <h5> Je veux changer mon mot de passe, comment faire ? </h5>
+            <div class="col-lg-7 alert-info" style="position: center">
+                <p>
+                        Rendez-vous dans vos paramètres utilisateur (onglet situé en haut à droite de votre fenêtre),
+                        puis saisissez votre nouveau mot de passe.
+                </p>
+            </div>
+        <h5> Je veux changer mon adresse email, comment faire ? </h5>
+            <div class="col-lg-7 alert-info">
+                <p>
+                    Rendez-vous dans vos paramètres utilisteur (onglet situé en haut à droite de votre fenêtre),
+                    puis saisissez votre nouvelle adresse e-mail.
+                </p>
+            </div>
+        <h5> Je suis daltonien je ne vois pas bien les couleurs, comment faire ? </h5>
+            <div class="col-lg-7 alert-info">
+                <p>
+                    Rendez-vous dans vos paramètres utilisteur (onglet situé en haut à droite de votre fenêtre),
+                    puis sélectionnez le mode "Daltoniens".
+                </p>
+            </div><br>
 
-    <h1>Vos questions, nos réponses...</h1><br>
+        <h3 style="color: lightslategrey;">Vous rencontrez des problèmes techniques ?</h3><br>
+            <div class="col-lg-4 alert-heading">
+                <a href="mailto:moneytoring@gmail.com">Contactez-nous ou signalez-nous un bug !</a><br>
+            </div><br>
 
-    <p>
-        <a href="/pictures/Graphique.png" onclick="window.open(this.href,'nom fenêtre', 'height=300, width=400'); return(false);">Je veux changer mon mot de passe, comment faire ?</a>
-        <br>
-        <a href="/pictures/Graphique.png" onclick="window.open(this.href,'nom fenêtre', 'height=300, width=400'); return(false);">Je veux changer mon adresse email, comment faire ?</a>
-        <br>
-        <a href="/pictures/Graphique.png" onclick="window.open(this.href,'nom fenêtre', 'height=300, width=400'); return(false);">Votre application ne m'intéresse plus, comment faire ?</a>
-        <br>
-        <a href="/pictures/Graphique.png" onclick="window.open(this.href,'nom fenêtre', 'height=300, width=400'); return(false);">Je suis daltonien je ne vois pas bien les couleurs, comment faire ?</a>
-        <br>
-    </p>
-
-    <h2>Vous rencontrez des problèmes techniques ?</h2>
-
-    <p1>
-        <a href="https://github.com/julien-guillan/MONEYTORING/issues" onclick="window.open(this.href,'nom fenêtre', 'height=500, width=700'); return(false);">Contactez-nous ou signalez-nous un bug !</a>
-        <br>
-    </p1>
+</div>
 
 {% endblock %}

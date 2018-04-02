@@ -22,16 +22,32 @@
             width: 100%;
             border-collapse: collapse;
         }
-        #tableScroll{
-            height: 395px;
-            overflow:auto;
-        }
-        #headScroll{
-            position: relative;
-        }
         td {
             border: 0.5px solid black;
         }
+        h3 {
+            margin-top: 20px;
+            margin-left: 30px;
+        }
+        h2{
+            margin-top: 30px;
+        }
+        .alert {
+            margin-top: 38px;
+        }
+        #tableScroll{
+            height: 395px;
+            overflow: auto;
+            margin-bottom: 20px;
+        }
+        #headScroll{
+            position: page;
+            width: 100%;
+        }
+        #position{
+            align-content: center;
+        }
+
     </style>
 
     {% block title %}
@@ -54,7 +70,7 @@
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <img class="img-fluid" src="../pictures/logo1texte.PNG" alt="Logo appli" width="280" height="61" style="margin-left: 100px"/>
+    <img class="img-fluid" src="../pictures/logo1texte.PNG" alt="Logo appli" width="350" height="150" style="margin-left: 350px"/>
     <div class="collapse navbar-collapse" id="navbarResponsive">
 
         {% block link %}
@@ -76,12 +92,6 @@
                 <a class="nav-link" href="{{ path('simulation') }}">
                     <i class="fa fa-fw fa-area-chart"></i>
                     <span class="nav-link-text">Simulateur</span>
-                </a>
-            </li>
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Entrer mouvement">
-                <a class="nav-link" href="{{ path('entrerMouvement') }}">
-                    <i class="fa fa-fw fa-table"></i>
-                    <span class="nav-link-text">Entrer mouvement</span>
                 </a>
             </li>
             <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
@@ -127,20 +137,21 @@
 </nav>
 
 <!-- CONTENU -->
-{% if error == "nullBudget" %}
-  <div class="alert alert-danger" style="margin-bottom: 10px">
-    ATTENTION VOTRE BUDGET A ÉTÉ DEPASSÉ.
-  </div>
-{% endif %}
 
 <div class="content-wrapper">
+    <div class="container-fluid">
+        {% if error == "nullBudget" %}
+            <div class="alert alert-danger">
+                ATTENTION VOTRE BUDGET A ÉTÉ DEPASSÉ.
+            </div>
+        {% endif %}
     <div class="row">
 
         {% block body %}
 
-        <div class="col-lg-5">
-            <div id="canvas-holder" style="width:125%">
-                <canvas id="chart-area" style="margin-top: 30px"/>
+        <div class="col-sm-5" id="position">
+            <div id="canvas-holder">
+                <canvas id="chart-area" style="margin-top: 30px" height="350" width="350"></canvas>
             </div>
 
         <script>
@@ -170,13 +181,14 @@
                     ]
                 },
                 options: {
+                    maintainAspectRatio : false,
                     responsive: true,
                     legend: {
                         position: 'top'
                     },
                     title: {
                         display: true,
-                        text: 'Situation actuelle'
+                        text: ' Situation actuelle '
                     },
                     animation: {
                         animateScale: true,
@@ -192,11 +204,42 @@
 
             </script>
         </div>
-{{ dump(fractions.0.montant) }}
-{{ dump(fractions.0) }}
-        <div class="col-lg-7">
-            <div class="container-fluid" style="margin-top: 30px" id="tableScroll">
-                <table class="table">
+
+        <div class="col-sm-6">
+            {% if error == "DBALException" %}
+                <div class="alert alert-danger">
+                    Le montant ne peut être nul.
+                </div>
+            {% endif %}
+
+            <h2> Entrer un nouveau mouvement </h2>
+            <!-- Formulaire de création de mouvement-->
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            {{ form_end(form) }}
+
+            <script>
+                function itemChange() {
+                    list = document.getElementById('form_type');
+                    choix = list.options[list.selectedIndex].text;
+                    if (choix == "Rentrée")
+                    {
+                        document.getElementById('form_fraction').disabled=true;
+                        //location.reload();
+                    }
+                    else {
+                        document.getElementById('form_fraction').disabled=false;
+                    }
+                    //location.reload();
+                }
+            </script>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-9" style="margin-top: 60px" id="tableScroll">
+            <div class="table-responsive">
+                <table class="table table-striped">
                     <thead class="thead-dark" id="headScroll" style="text-align: center">
                     <tr>
                         <th scope="col">
@@ -219,7 +262,7 @@
                         </th>
                     </tr>
                     </thead>
-                    <tbody class="container-fluid">
+                    <tbody>
                     {% for mouvement in mouvements %}
                         {% for mouv in mouvement %}
                             <tr>
@@ -248,71 +291,11 @@
                 </table>
             </div>
         </div>
-
-        <style>
-        .form-control-label
-        {
-          margin-left: 50px;
-        }
-        .col-form-legend
-        {
-          margin-left: 50px;
-        }
-        .form-control{
-            margin-top: 20px;
-            margin-left: 50px;
-        }
-        h3 {
-          margin-top: 75px;
-          margin-left: 50px;
-        }
-        .btn
-        {
-          margin-left: 50px;
-        }
-        .alert
-        {
-          margin-top: 30px;
-        }
-      </style>
-
-    </div>
-    <div class="row">
-        <div class="col-lg-7">
-          <div class="container-fluid">
-          {% if error == "DBALException" %}
-            <div class="alert alert-danger">
-              Le montant ne peut être nul.
-            </div>
-          {% endif %}
-
-          <h3> Entrer un nouveau mouvement </h3>
-          <!-- Formulaire de création de mouvement-->
-          {{ form_start(form) }}
-          {{ form_widget(form) }}
-          {{ form_end(form) }}
-
-          <script>
-            function itemChange() {
-              list = document.getElementById('form_type');
-              choix = list.options[list.selectedIndex].text;
-              if (choix == "Rentrée")
-              {
-                document.getElementById('form_fraction').disabled=true;
-                //location.reload();
-              }
-              else {
-                document.getElementById('form_fraction').disabled=false;
-              }
-              //location.reload();
-            }
-          </script>
-          </div>
-        </div>
     </div>
 
     {% endblock %}
 
+</div>
 </div>
 </body>
 <footer>
