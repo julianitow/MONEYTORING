@@ -37,10 +37,12 @@ class DefaultController extends Controller
         $id = $session->get('id');
         $prenom = $session->get('prenom');
         $budgetGlobal = $session->get('budgetGlobal');
+        $budgetRestant = null;
 
          if ($id == null)
         {
             $error = "ConnexionNeeded";
+            return $this->redirect("accueil", 308);
         }
         else
         {
@@ -56,31 +58,44 @@ class DefaultController extends Controller
         //RECUPERATION DES MOUVEMENTS DES PARTITIONS LIEES
         $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
         $montant = null;
-        $budgetRestant = $budgetGlobal;
-
+        if ($partitions[0]->getNom() == "Budget Restant")
+        {
+          $budgetRestant = $partitions[0]->getMontant();
+          $partitionBudgetRestant = $partitions[0];
+        }
         foreach ($partitions as $partition)
         {
             $mouvements[$partition->getId()] = $repositoryMouvement->findByFraction($partition->getId());
             $montant[$partition->getId()] = null;
-
                 foreach($mouvements[$partition->getId()] as $mouvementCalc)
                 {
-                  var_dump($mouvementCalc->getType());
                   if ($mouvementCalc->getType() == "Sortie")
                   {
-                    $budgetRestant = $budgetRestant - $mouvementCalc->getMontant();
+
+                    $budgetRestant = $budgetRestant - $partition->getMontant();
+                    //$budgetRestant = $budgetRestant - $mouvementCalc->getMontant();
+                    //DIMINUTION DE LA PARTITION BUDGET RESTANT
+                    //Recupération de la partition
                   }
                   elseif ($mouvementCalc->getType() == "Rentree")
                   {
                     $budgetRestant = $budgetRestant + $mouvementCalc->getMontant();
-                  }
+                    //AUGMENTATION DE LA PARTITION BUDGET RESTANT
 
+                    $modifFraction = $mouvementCalc->setFraction($partitionBudgetRestant);
+                    $modifFraction2 = $partitionBudgetRestant->setMontant($budgetRestant);
+
+                    $manager->persist($modifFraction);
+                    $manager->persist($modifFraction2);
+                  }
+/*
                   if ($mouvementCalc->getFraction()->getId() == $partition->getId())
                   {
                       $montant[$partition->getId()] += $mouvementCalc->getMontant();
-                  }
+                  }*/
                 }
         }
+        $manager->flush();
         //en cas de budget restant négatif
         if ($budgetRestant <= 0)
         {
@@ -261,9 +276,28 @@ class DefaultController extends Controller
         return $this->render('@Application/Default/entrerMouvement.html.twig');
     }
 
-    public function modifierMouvementAction()
+    public function modifierMouvementAction(Request $request)
     {
-        return $this->render('@Application/Default/modifierMouvement.html.twig');
+        $error = null;
+        $session = $request->getSession();
+        $id = $session->get('id');
+        $prenom = $session->get('prenom');
+        $montant = $session->get('montant');
+        $budgetGlobal = $session->get('budgetGlobal');
+
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
+        $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
+
+        $partitions = $repositoryFraction->findByUserID($id);
+
+        foreach ($partitions as $partition )
+        {
+          $mouvements[$partition->getId()] = $repositoryMouvement->findByFraction($partition->getId());
+        }
+
+
+      return $this->render('@Application/Default/modifierMouvement.html.twig', ['mouvements'=>$mouvements, 'prenom' => $prenom, 'error' => $error]);
     }
 
     public function aideAction(Request $request)
@@ -272,6 +306,33 @@ class DefaultController extends Controller
         $prenom = $session->get('prenom');
         $error = null;
         return $this->render('@Application/Default/aide.html.twig', ['prenom' => $prenom, 'error' => $error]);
+    }
+
+    public function suppressionAction(Request $request, $idMouvement)
+    {
+        $error = null;
+        $session = $request->getSession();
+        $id = $session->get('id');
+        $prenom = $session->get('prenom');
+        $montant = $session->get('montant');
+        $budgetGlobal = $session->get('budgetGlobal');
+
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
+        $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
+
+        $mouvement = $repositoryMouvement->findByMouvementId($idMouvement);
+        if ($mouvement == "NoResultException")
+        {
+          $error = "NoResultException";
+        }
+        else {
+          $error = null;
+          $manager->remove($mouvement);
+          $manager->flush();
+        }
+
+        return $this->render('@Application/Default/suppression.html.twig', ['mouvement' => $mouvement, 'idMouvement' => $idMouvement, 'prenom' => $prenom, 'error' => $error]);
     }
 }
 

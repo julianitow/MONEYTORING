@@ -47,4 +47,66 @@
 
 {% block body %}
 
+<div class="col-lg-7">
+    <div class="container-fluid" style="margin-top: 30px">
+        <table class="table">
+            <thead class="thead-dark" id="headScroll" style="text-align: center">
+            <tr>
+                <th scope="col">
+                    Mouvement
+                </th>
+                <th scope="col">
+                    Nom
+                </th>
+                <th scope="col">
+                    Montant
+                </th>
+                <th scope="col">
+                    Date
+                </th>
+                <th scope="col">
+                    Partition
+                </th>
+                <th scope="col">
+                    Type
+                </th>
+                <th>
+                  Modifier
+                </th>
+            </tr>
+            </thead>
+            <tbody class="container-fluid">
+            {% for mouvement in mouvements %}
+                {% for mouv in mouvement %}
+                    <tr>
+                        <td scope="row" style="text-align: center">
+                            {{ mouv.id }}
+                        </td>
+                        <td scope="row" style="text-align: center">
+                            {{ mouv.nom }}
+                        </td>
+                        <td scope="row">
+                            {{ mouv.montant }}
+                        </td>
+                        <td scope="row">
+                            {{ mouv.date|date("d/m/Y") }}
+                        </td>
+                        <td scope="row">
+                            {{ mouv.fraction.nom }}
+                        </td>
+                        <td scope="row">
+                            {{ mouv.type }}
+                        </td>
+                        <td>
+                          <button class="btn btn-primary">Modifier</button>
+                          <a class="btn btn-danger" href="{{ path('suppression', {'idMouvement': mouv.id}) }}">Supprimer</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
 {% endblock %}

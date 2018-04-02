@@ -18,7 +18,9 @@ class MouvementRepository extends \Doctrine\ORM\EntityRepository
     $qb -> select('m')
         ->from('ApplicationBundle:Mouvement', 'm')
         ->where('m.fraction = :id')
-        ->setParameter('id', $id);
+        ->orderBy('m.date', 'ASC')
+        ->setParameter('id', $id)
+        ;
 
     $requete = $qb->getQuery();
 
@@ -33,4 +35,55 @@ class MouvementRepository extends \Doctrine\ORM\EntityRepository
 
 		return $result;
   }
+
+  public function findBudgetRestant($id)
+  {
+    $nom = "Budget Restant";
+
+    $qb = $this->_em->createQueryBuilder('m');
+
+    $qb -> select('m')
+        ->from('ApplicationBundle:Mouvement', 'm')
+        ->where('m.fraction = :id')
+        ->andWhere('m.fraction.nom = :nom')
+        ->setParameter('id', $id)
+        ->setParameter('nom', $nom);
+
+    $requete = $qb->getQuery();
+
+    try
+		{
+			$result = $requete->getResult();
+		}
+		catch (\Doctrine\ORM\NoResultException $e)
+		{
+			$result = "NoResultException";
+		}
+
+		return $result;
+  }
+
+  public function findByMouvementId($id)
+  {
+    $qb = $this->_em->createQueryBuilder('m');
+
+    $qb ->select('m')
+        ->from('ApplicationBundle:Mouvement', 'm')
+        ->where('m.id = :id')
+        ->setParameter('id', $id);
+
+    $requete = $qb->getQuery();
+
+    try
+    {
+      $result = $requete->getSingleResult();
+    }
+    catch (\Doctrine\ORM\NoResultException $e)
+    {
+      $result = "NoResultException";
+    }
+
+    return $result;
+  }
+
 }

@@ -8,6 +8,7 @@
     <link href="{{ asset('css/sb-admin.css') }}" rel="stylesheet">
     <script src="{{ asset('js/Chart.bundle.js') }}"></script>
     <script src="{{ asset('js/utils.js') }}"></script>
+
     <style>
         canvas {
             -moz-user-select: none;
@@ -16,6 +17,20 @@
         }
         body {
             padding-top: 60px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        #tableScroll{
+            height: 395px;
+            overflow:auto;
+        }
+        #headScroll{
+            position: relative;
+        }
+        td {
+            border: 0.5px solid black;
         }
     </style>
 
@@ -27,8 +42,7 @@
 </head>
 
 {% if error == "ConnexionNeeded" %}
-    <div class="alert alert-danger">ACCES REFUSE. VEUILLEZ-VOUS CONNECTER</div>
-
+    <div class="alert alert-danger">ACCÈS REFUSÉ. VEUILLEZ-VOUS CONNECTER</div>
 {% else %}
 
 <body class="fixed-nav sticky-footer bg-dark" id="page-top">
@@ -40,12 +54,12 @@
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <img class="img-fluid" src="pictures/logo1texte.PNG" alt="Logo appli" width="280" height="61"/>
+    <img class="img-fluid" src="../pictures/logo1texte.PNG" alt="Logo appli" width="280" height="61" style="margin-left: 100px"/>
     <div class="collapse navbar-collapse" id="navbarResponsive">
 
         {% block link %}
 
-        <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+        <ul class="navbar-nav navbar-sidenav" id="exampleAccordion" style="margin-top: 70px">
             <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Accueil">
                 <a class="nav-link" href="{{ path('application_homepage') }}">
                     <i class="fa fa-fw fa-home"></i>
@@ -114,22 +128,20 @@
 
 <!-- CONTENU -->
 {% if error == "nullBudget" %}
-  <div class="alert alert-danger">
-    ATTENTION VOTRE BUDGET A ETE DEPASSE.
+  <div class="alert alert-danger" style="margin-bottom: 10px">
+    ATTENTION VOTRE BUDGET A ÉTÉ DEPASSÉ.
   </div>
 {% endif %}
 
 <div class="content-wrapper">
     <div class="row">
-        <div class="col-lg-1">
-        </div>
+
         {% block body %}
 
-    <div class="container-fluid">
-        <div class="col-lg-10">
-        <div id="canvas-holder" style="width:60%">
-            <canvas id="chart-area" />
-        </div>
+        <div class="col-lg-5">
+            <div id="canvas-holder" style="width:125%">
+                <canvas id="chart-area" style="margin-top: 30px"/>
+            </div>
 
         <script>
             var config = {
@@ -140,12 +152,9 @@
                             {% for value in montant %}
                               {{ value }},
                             {% endfor %}
-                            {{ budgetRestant }}
-
 
                         ],
                         backgroundColor: [
-
                             {% for partition in fractions %}
                               window.chartColors.{{ partition.couleur }},
                             {% endfor %}
@@ -167,7 +176,7 @@
                     },
                     title: {
                         display: true,
-                        text: 'Etat des finances'
+                        text: 'Situation actuelle'
                     },
                     animation: {
                         animateScale: true,
@@ -181,13 +190,66 @@
                 window.myDoughnut = new Chart(ctx, config);
             };
 
-
-
-
-        </script>
+            </script>
         </div>
-      </div>
-      <style>
+{{ dump(fractions.0.montant) }}
+{{ dump(fractions.0) }}
+        <div class="col-lg-7">
+            <div class="container-fluid" style="margin-top: 30px" id="tableScroll">
+                <table class="table">
+                    <thead class="thead-dark" id="headScroll" style="text-align: center">
+                    <tr>
+                        <th scope="col">
+                            Mouvement
+                        </th>
+                        <th scope="col">
+                            Nom
+                        </th>
+                        <th scope="col">
+                            Montant
+                        </th>
+                        <th scope="col">
+                            Date
+                        </th>
+                        <th scope="col">
+                            Partition
+                        </th>
+                        <th scope="col">
+                            Type
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="container-fluid">
+                    {% for mouvement in mouvements %}
+                        {% for mouv in mouvement %}
+                            <tr>
+                                <td scope="row" style="text-align: center">
+                                    {{ mouv.id }}
+                                </td>
+                                <td scope="row" style="text-align: center">
+                                    {{ mouv.nom }}
+                                </td>
+                                <td scope="row">
+                                    {{ mouv.montant }}
+                                </td>
+                                <td scope="row">
+                                    {{ mouv.date|date("d/m/Y") }}
+                                </td>
+                                <td scope="row">
+                                    {{ mouv.fraction.nom }}
+                                </td>
+                                <td scope="row">
+                                    {{ mouv.type }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <style>
         .form-control-label
         {
           margin-left: 50px;
@@ -214,7 +276,10 @@
         }
       </style>
 
-        <div class="container">
+    </div>
+    <div class="row">
+        <div class="col-lg-7">
+          <div class="container-fluid">
           {% if error == "DBALException" %}
             <div class="alert alert-danger">
               Le montant ne peut être nul.
@@ -242,61 +307,10 @@
               //location.reload();
             }
           </script>
-
+          </div>
         </div>
     </div>
-    <div>
-      <table class="table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">
-              Mouvement
-            </th>
-            <th scope="col">
-              Nom
-            </th>
-            <th scope="col">
-              Montant
-            </th>
-            <th scope="col">
-              Date
-            </th>
-            <th scope="col">
-              Partition
-            </th>
-            <th scope="col">
-              Type
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for mouvement in mouvements %}
-            {% for mouv in mouvement %}
-              <tr>
-                <td scope="row">
-                  {{ mouv.id }}
-                </td>
-                <td scope="row">
-                  {{ mouv.nom }}
-                </td>
-                <td scope="row">
-                  {{ mouv.montant }}
-                </td>
-                <td scope="row">
-                  {{ mouv.date|date("d/m/Y") }}
-                </td>
-                <td scope="row">
-                  {{ mouv.fraction.nom }}
-                </td>
-                <td scope="row">
-                  {{ mouv.type }}
-                </td>
-              </tr>
-            {% endfor %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
+
     {% endblock %}
 
 </div>
