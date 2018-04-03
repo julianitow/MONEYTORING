@@ -45,3 +45,9 @@ parametres:
 deconnexion:
     path:     /deconnexion
     defaults: { _controller: ApplicationBundle:User:deconnexion }
+
+suppression:
+    path:     /suppression/{idMouvement}
+    defaults: { _controller: ApplicationBundle:Default:suppression}
+    requirements:
+      id: '\d+'

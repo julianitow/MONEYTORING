@@ -24,12 +24,6 @@
                 <span class="nav-link-text"><b>Simulateur</b></span>
             </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Entrer mouvement">
-            <a class="nav-link" href="{{ path('entrerMouvement') }}">
-                <i class="fa fa-fw fa-table"></i>
-                <span class="nav-link-text">Entrer mouvement</span>
-            </a>
-        </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
             <a class="nav-link" href="{{ path('modifierMouvement') }}">
                 <i class="fa fa-fw fa-table"></i>
@@ -46,63 +40,72 @@
 {% endblock %}
 
 {% block body %}
-<style>
-  .progress{
-    margin-top: 10px;
-    height : 40px;
-  }
-  #progress2 {
-    margin-top: 10px;
-  }
-  h3{
-    margin-top: 50px;
-  }
-  #titreAvecProjet{
-    margin-top: 20px;
-  }
-</style>
-<h2></h2>
+
+    <style>
+        .progress{
+            margin-top: 10px;
+            height : 40px;
+        }
+        h3{
+            margin-top: 50px;
+        }
+        #tableScroll2{
+            height: 200px;
+            overflow: auto;
+            margin-bottom: 20px;
+        }
+        #headScroll2{
+            position: page;
+            width: 100%;
+        }
+    </style>
+
 <div class="container-fluid" style="margin-left:20px">
   <div class="row">
     <div class="col-sm-6">
-      <h3>Visualisation</h3>
-      {{ dump(projetSelectionne) }}
+
+      <h3>Visualisation</h3><br>
       <h4>Situation en cours :</h4>
+
       <div class="progress" id="progress1">
         {% for partition in fractions %}
-        <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
-          {{ partition.nom }}
-        </div>
+          <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
+            {{ partition.nom }}
+          </div>
         {% endfor %}
       </div>
-      <h4 id="titreAvecProjet">Situation avec projet :</h4>
-      <div class="progress" id="progress2">
+
+      <h4 id="titreAvecProjet" style="margin-top: 20px">Situation avec projet :</h4>
+
+      <div class="progress" id="progress2" style="margin-top: 20px">
         {% for partition in fractions %}
-        <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
-          {{ partition.nom }}
-        </div>
+          <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
+            {{ partition.nom }}
+          </div>
         {% endfor %}
+
         {% for projet in projetSelectionne %}
-        {% for project in projet %}
-        {{ dump(project) }}
-        <div class="progress-bar" role="progressbar" style="width:{{ projet.montant }}%; background-color:gray">
-          {{ project.nom.projet.nom }}
-        </div>
-        {% endfor %}
+            {% for project in projet %}
+              <div class="progress-bar" role="progressbar" style="width:{{ projet.montant }}%; background-color:gray">
+                {{ project.nom.projet.nom }}
+              </div>
+            {% endfor %}
         {% endfor %}
       </div>
     </div>
+
     <div class="col-sm-6">
-      <h3>Projets de dépenses</h3>
+
+      <h3>Projets de dépenses</h3><br>
 
       <!--PROGRAMMATION DU PROJET -->
       {{ form_start(formProgrammer) }}
       {{ form_widget(formProgrammer) }}
       {{ form_end(formProgrammer) }}
 
-      <div>
-        <table class="table">
-          <thead class="thead-dark">
+      <div id="tableScroll2">
+        <table class="table table-striped">
+          <thead class="thead-dark" id="headScroll2">
             <tr>
               <th scope="col">
                 Nom

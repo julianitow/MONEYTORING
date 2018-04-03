@@ -1,7 +1,7 @@
 {% extends '@Application/Default/index.html.twig' %}
 
 {% block title %}
-    <title>Moneytoring - Entrer Mouvement</title>
+    <title>Moneytoring - Suppression</title>
 {% endblock %}
 
 {% block link %}
@@ -24,10 +24,10 @@
                 <span class="nav-link-text">Simulateur</span>
             </a>
         </li>
-        <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Entrer mouvement">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Entrer mouvement">
             <a class="nav-link" href="{{ path('entrerMouvement') }}">
                 <i class="fa fa-fw fa-table"></i>
-                <span class="nav-link-text"><b>Entrer mouvement</b></span>
+                <span class="nav-link-text">Entrer mouvement</span>
             </a>
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
@@ -36,9 +36,9 @@
                 <span class="nav-link-text">Modifier mouvement</span>
             </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Aide">
+        <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Aide">
             <a class="nav-link" href="{{ path('aide') }}">
-                <i class="fa fa-fw fa-coffee"></i>
+                <i class="fa fa-fw fa-table"></i>
                 <span class="nav-link-text">Aide</span>
             </a>
         </li>
@@ -46,5 +46,16 @@
 {% endblock %}
 
 {% block body %}
+    <div class="container-fluid">
+      {% if error == "NoResultException" %}
+        <div class="alert alert-danger">
+          Erreur de suppression
+        </div>
+      {% else %}
+        <div class="alert alert-success">
+          Suppression effectuée
+        </div>
+      {% endif %}
+    </div>
 
 {% endblock %}

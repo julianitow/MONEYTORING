@@ -24,12 +24,6 @@
                 <span class="nav-link-text">Simulateur</span>
             </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Entrer mouvement">
-            <a class="nav-link" href="{{ path('entrerMouvement') }}">
-                <i class="fa fa-fw fa-table"></i>
-                <span class="nav-link-text">Entrer mouvement</span>
-            </a>
-        </li>
         <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
             <a class="nav-link" href="{{ path('modifierMouvement') }}">
                 <i class="fa fa-fw fa-table"></i>
@@ -46,5 +40,66 @@
 {% endblock %}
 
 {% block body %}
+
+<div class="container-fluid" style="margin-top: 40px">
+    <div class="col-lg-12">
+        <table class="table">
+            <thead class="thead-dark" id="headScroll" style="text-align: center">
+                <tr>
+                    <th scope="col">
+                        Mouvement
+                    </th>
+                    <th scope="col">
+                        Nom
+                    </th>
+                    <th scope="col">
+                        Montant
+                    </th>
+                    <th scope="col">
+                        Date
+                    </th>
+                    <th scope="col">
+                        Partition
+                    </th>
+                    <th scope="col">
+                        Type
+                    </th>
+                    <th>
+                    Modifier
+                    </th>
+                </tr>
+            </thead>
+                <tbody class="container-fluid">
+                {% for mouvement in mouvements %}
+                    {% for mouv in mouvement %}
+                        <tr>
+                            <td scope="row" style="text-align: center">
+                                {{ mouv.id }}
+                            </td>
+                            <td scope="row" style="text-align: center">
+                                {{ mouv.nom }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.montant }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.date|date("d/m/Y") }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.fraction.nom }}
+                            </td>
+                            <td scope="row">
+                                {{ mouv.type }}
+                            </td>
+                            <td>
+                                <a class="btn btn-danger" href="{{ path('suppression', {'idMouvement': mouv.id}) }}">Supprimer</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endfor %}
+                </tbody>
+        </table>
+    </div>
+</div>
 
 {% endblock %}
