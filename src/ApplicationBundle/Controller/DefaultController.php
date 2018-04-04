@@ -95,9 +95,9 @@ class DefaultController extends Controller
                       $montant[$partition->getId()] += $mouvementCalc->getMontant();
                   }
                 }
-              
+
         }
-        $manager->flush();
+        //$manager->flush();
         //en cas de budget restant négatif
         if ($budgetRestant <= 0)
         {
@@ -183,12 +183,14 @@ class DefaultController extends Controller
 
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
 
         if($form->isSubmitted() && $form->isValid())
         {
           $fraction = $form->getData();
 
-          $manager = $this->getDoctrine()->getManager();
+
 
           //RECHERCHE DE L'UTILISATEUR LIE
           $utilisateurLie = new Utilisateur();
@@ -205,7 +207,7 @@ class DefaultController extends Controller
           }*/
 
           //APPLICATION DANS LA BASE DE DONNEES
-          $repositoryFraction = $manager->getRepository('ApplicationBundle:Fraction');
+
           $manager->persist($fraction);
           try
           {
@@ -219,8 +221,10 @@ class DefaultController extends Controller
 
         }
 
+        $fractions = $repositoryFraction->findByUserID($id);
 
-        return $this->render('@Application/Default/partition.html.twig', ['form' => $form->createView(), 'prenom' => $prenom, 'mouvements' => $mouvements, 'utilisateur' => $fraction, 'error'=>$error]);
+
+        return $this->render('@Application/Default/partition.html.twig', ['form' => $form->createView(), 'prenom' => $prenom, 'mouvements' => $mouvements, 'utilisateur' => $fraction, 'fractions'=>$fractions,'error'=>$error]);
     }
 
     public function simulationAction(Request $request)
