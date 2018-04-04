@@ -89,7 +89,7 @@
             <thead class="thead-dark" id="headScroll" style="text-align: center">
                 <tr>
                     <th scope="col">
-                        Mouvement
+                        ID
                     </th>
                     <th scope="col">
                         Nom
@@ -97,41 +97,21 @@
                     <th scope="col">
                         Montant
                     </th>
-                    <th scope="col">
-                        Date
-                    </th>
-                    <th scope="col">
-                        Partition
-                    </th>
-                    <th scope="col">
-                        Type
-                    </th>
                 </tr>
             </thead>
             <tbody>
-                {% for mouvement in mouvements %}
-                    {% for mouv in mouvement %}
+                {% for partition in fractions %}
                         <tr>
                             <td scope="row">
-                                {{ mouv.id }}
+                                {{ partition.id }}
                             </td>
                             <td scope="row">
-                                {{ mouv.nom }}
+                                {{ partition.nom }}
                             </td>
                             <td scope="row">
-                                {{ mouv.montant }}
-                            </td>
-                            <td scope="row">
-                                {{ mouv.date|date("d/m/Y") }}
-                            </td>
-                            <td scope="row">
-                                {{ mouv.fraction.nom }}
-                            </td>
-                            <td scope="row">
-                                {{ mouv.type }}
+                                {{ partition.couleur }}
                             </td>
                         </tr>
-                    {% endfor %}
                 {% endfor %}
             </tbody>
         </table>
