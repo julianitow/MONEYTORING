@@ -7,6 +7,7 @@ namespace ApplicationBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ApplicationBundle\Entity\Utilisateur;
 use ApplicationBundle\Entity\Fraction;
+use ApplicationBundle\Entity\Mouvement;
 use Doctrine\ORM\NoResultException;
 
 //CONTENU FORMULAIRE
@@ -113,6 +114,9 @@ class UserController extends Controller
 
         $user = new Utilisateur();
 
+        $date = new \DateTime();
+        $date->format('\O\n Y-m-d');
+
         $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
 
         $formBuilder
@@ -149,8 +153,18 @@ class UserController extends Controller
             $fractionBudgetRestant->setPriorite(5);
             $fractionBudgetRestant->setUtilisateur($user);
 
+            //CREATION D'UN MOUVEMENT POUR LA PARTITION BUDGET RESTANT
+            $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
+            $mouvementBudgetRestant = new Mouvement();
+            $mouvementBudgetRestant->setNom('Budget Restant');
+            $mouvementBudgetRestant->setMontant($fractionBudgetRestant->getMontant());
+            $mouvementBudgetRestant->setType('Sortie');
+            $mouvementBudgetRestant->setDate($date);
+            $mouvementBudgetRestant->setFraction($fractionBudgetRestant->getId());
+
             $manager->persist($user);
             $manager->persist($fractionBudgetRestant);
+            $manager->persist($mouvementBudgetRestant);
 
             try
             {

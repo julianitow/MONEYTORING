@@ -37,7 +37,6 @@ class DefaultController extends Controller
         $id = $session->get('id');
         $prenom = $session->get('prenom');
         $budgetGlobal = $session->get('budgetGlobal');
-        $budgetRestant = null;
 
          if ($id == null)
         {
@@ -58,12 +57,12 @@ class DefaultController extends Controller
         //RECUPERATION DES MOUVEMENTS DES PARTITIONS LIEES
         $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
         $montant = null;
-      /*  if ($partitions[0]->getNom() == "Budget Restant")
+        if ($partitions[0]->getNom() == "Budget Restant")
         {
-          $budgetRestant = $partitions[0]->getMontant();
           $partitionBudgetRestant = $partitions[0];
-        }*/
-        $budgetRestant = $budgetGlobal;
+          $budgetRestant = $partitionBudgetRestant->getMontant();
+        }
+
         foreach ($partitions as $partition)
         {
             $mouvements[$partition->getId()] = $repositoryMouvement->findByFraction($partition->getId());
@@ -95,7 +94,7 @@ class DefaultController extends Controller
                       $montant[$partition->getId()] += $mouvementCalc->getMontant();
                   }
                 }
-              
+
         }
         $manager->flush();
         //en cas de budget restant négatif
