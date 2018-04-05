@@ -79,7 +79,7 @@
                             <td scope="row" style="text-align: center">
                                 {{ mouv.nom }}
                             </td>
-                            <td scope="row">
+                            <td scope="row" style="text-align: center">
                                 {{ mouv.montant }}
                             </td>
                             <td scope="row">
@@ -91,7 +91,8 @@
                             <td scope="row">
                                 {{ mouv.type }}
                             </td>
-                            <td>
+                            <td style="text-align: center">
+                                <a class="btn btn-primary" href="#">Modifier</a>
                                 <a class="btn btn-danger" href="{{ path('suppression', {'idMouvement': mouv.id}) }}">Supprimer</a>
                             </td>
                         </tr>
