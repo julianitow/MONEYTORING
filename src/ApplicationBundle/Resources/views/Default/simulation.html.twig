@@ -65,31 +65,62 @@
 
     <div class="col-sm-6">
       <h3>Visualisation</h3><br>
+      {% if msg == "MontantTooHigh" %}
+        <div class="alert alert-danger">
+          Budget Depasse
+        </div>
+      {% endif %}
       <h4>Situation en cours :</h4>
 
       <div class="progress" id="progress1">
         {% for partition in fractions %}
           <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
-            {{ partition.nom }}
+            {{ partition.nom }} : {{ partition.montant }}€
           </div>
         {% endfor %}
+        <div class="progress-bar" role="progressbar" style="width:{{ budgetRestant }}%; background-color:gray">
+          "Restant" : {{ budgetRestant }}€
+        </div>
       </div>
+<<<<<<< HEAD
 
+=======
+>>>>>>> a2503ba5ea9a56a1f628499acb7971c79398e8e5
       <h4 id="titreAvecProjet" style="margin-top: 20px">Situation avec projet :</h4>
 
       <div class="progress" id="progress2" style="margin-top: 20px">
-        {% for partition in fractions %}
+        {% for partition in fractionsSimu %}
           <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
-            {{ partition.nom }}
+            {{ partition.nom }} - {{ partition.montant }}€
           </div>
         {% endfor %}
 
+<<<<<<< HEAD
         {% for projet in projetSelectionne %}
           <div class="progress-bar" role="progressbar" style="width:{{ projet.nom.projet.montant }}%; background-color:gray">
             {{ projet.nom.projet.nom }}
           </div>
         {% endfor %}
       </div>
+=======
+            {% if projetSelectionne is not null %}
+              <div class="progress-bar" role="progressbar" style="width:{{ projetSelectionne.nom.montant }}%; background-color:green">
+                {{ projetSelectionne.nom.nom }} - {{ projetSelectionne.nom.montant }}€
+              </div>
+            {% endif %}
+            <div class="progress-bar" role="progressbar" style="width:{{ budgetRestant }}%; background-color:gray">
+              "Restant" : {{ budgetRestant }}€
+            </div>
+      </div>
+      <h3> Montant à économiser : </h3>
+      <div class="col-sm-12" style="margin-left : 20px">
+        {% for eco in economie %}
+          {{ eco }} € à économiser. <br>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-sm-6">
+>>>>>>> a2503ba5ea9a56a1f628499acb7971c79398e8e5
 
       <h3>Projets de dépenses</h3><br>
 

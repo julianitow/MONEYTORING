@@ -109,11 +109,10 @@ class DefaultController extends Controller
                 }
 
         }
-        $mouvementBudgetRestant->setFraction($partitionBudgetRestant);
-        $mouvementBudgetRestant->setMontant($budgetRestant);
+        //$mouvementBudgetRestant->setMontant($budgetRestant);
         //$mouvementBudgetRestant->setMontant($budgetRestant);
         //$partitionBudgetRestant->setMontant($montant[$partitionBudgetRestant->getId()]);
-        $manager->persist($mouvementBudgetRestant);
+        //$manager->persist($mouvementBudgetRestant);
         $manager->flush();
 
         $session->set('BudgetRestant', $budgetRestant);
@@ -132,6 +131,7 @@ class DefaultController extends Controller
         $session->set('mouvements', $mouvements);
         $session->set('montant', $montant);
         $session->set('budgetGlobal', $budgetGlobal);
+        $session->set('fractions', $partitions);
 
 
         //FORMULAIRE DE CREATION DE MOUVEMENT
@@ -257,7 +257,12 @@ class DefaultController extends Controller
         $budgetGlobal = $session->get('budgetGlobal');
         $budgetRestant = $session->get('budgetRestant');
         $montant = $session->get('montant');
-        $user = $session->get('utilisateur');
+        $partitions = $session->get('fractions');
+
+        if (!isset($economie))
+        {
+          $economie[0] = "Pas de projet selectionné donc 0 ";
+        }
 
         //RECUPERATION DES FRACTIONS:
         $manager = $this->getDoctrine()->getManager();
@@ -296,6 +301,7 @@ class DefaultController extends Controller
         $projets = $repositoryProjet->findByUserID($id);
 
         $fractions = $repositoryFraction->findByUserID($id);
+        $fractionsSimu = $fractions;
 
         //Comptage des partitions modifiables
         $nbPartitionModifiable = 0;
@@ -308,21 +314,68 @@ class DefaultController extends Controller
            }
          }
          //VERIFICATION DU BUDGET RESTANT PAR RAPORT AU MONTANT DU PROJET
-         #if ($projetSelectionne->getMontant() > $budgetRestant)
-         #{
-          # $pourcentage = ($projetSelectionne->getMontant()/$budgetRestant)*$nbPartitionModifiable;
-           //$economisable =
-         #}
-         #else {
-          # $error = "succeed project";
-         #}
+         $msg = null;
+         if (isset($projetSelectionne))
+         {
+           if ($projetSelectionne->getMontant() > $budgetRestant)
+           {
+             $pourcentage = ($projetSelectionne->getMontant()/$budgetRestant)*$nbPartitionModifiable;
+
+             $msg = "MontantTooHigh";
+             //$economisable =
+           }
+           else {
+             $msg = "succeed project";
+           }
+
+           foreach($fractionsSimu as $fractionSimu)
+           {
+             if ($fractionSimu->getPriorite() < 2)
+             {
+               $montantFractionBase = $fractionSimu->getMontant();
+               $montantFraction = $montantFractionBase;
+               //CALCUL DU POURCENTAGE DE REDUCTION
+               $montantFraction -= ($montantFractionBase/100)*20;
+               $fractionSimu->setMontant($montantFraction);
+               $montantEco = $montantFractionBase - $montantFraction;
+               $montantEcoString = ( string ) $montantEco;
+
+               $economie[$fractionSimu->getNom()] =  $fractionSimu->getNom() . " " . " : " . $montantEcoString;
+             }
+             elseif ($fractionSimu->getPriorite() < 4)
+             {
+               $montantFractionBase = $fractionSimu->getMontant();
+               $montantFraction = $montantFractionBase;
+               //CALCUL DU POURCENTAGE DE REDUCTION
+               $montantFraction - ($montantFractionBase/100)*40;
+               $fractionSimu->setMontant($montantFraction);
+               $montantEco = $montantFractionBase - $montantFraction;
+               $montantEcoString = ( string ) $montantEco;
+
+               $economie[$fractionSimu->getNom()] =  '<b>' . $fractionSimu->getNom() . '</b>' . " " . " : " . $montantEcoString;
+             }
+             else
+             {
+               $montantFractionBase = $fractionSimu->getMontant();
+               $montantFraction = $montantFractionBase;
+               //CALCUL DU POURCENTAGE DE REDUCTION
+               $montantFraction -= ($montantFractionBase/100)*60;
+               $fractionSimu->setMontant($montantFraction);
+
+               $montantEco = $montantFractionBase - $montantFraction;
+               $montantEcoString = ( string ) $montantEco;
+
+               $economie[$fractionSimu->getNom()] =  $fractionSimu->getNom() . " " . " : " . $montantEcoString;
+             }
+           }
+         }
 
         $projetCree = new Projet();
 
         $formBuilder2 = $this->get('form.factory')->createBuilder(FormType::class, $projetCree);
 
         $formBuilder2
-            ->add('nom', TextType::class, ['label'=>'Nom', 'attr' => ['placeholder' => '"Voyage Caraïbes"']])
+            ->add('nom', TextType::class, ["allow_extra_fields" => true,'label'=>'Nom', 'attr' => ['placeholder' => '"Voyage aux Caraïbes"']])
             ->add('dateDebut', DateType::class, ['label' => 'Date début' , 'format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
             ->add('dateFin', DateType::class, ['label' => 'Date fin' , 'format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
             ->add('montant', MoneyType::class, ['label' => 'Montant', 'currency' => null, 'scale' => 4, 'attr'=>['placeholder' => '"400"']])
@@ -330,6 +383,8 @@ class DefaultController extends Controller
             ;
         $formCreationProjet = $formBuilder2->getForm();
         $formCreationProjet->handleRequest($request2);
+
+        $user = $session->get('utilisateur');
 
         if($formCreationProjet->isSubmitted() && $formCreationProjet->isValid())
         {
@@ -341,7 +396,7 @@ class DefaultController extends Controller
           try {
 
             $manager->flush();
-            return $this->redirectToRoute('application_homepage');
+            return $this->redirectToRoute('simulation');
 
           }
           catch (DBALException $e)
@@ -351,8 +406,8 @@ class DefaultController extends Controller
 
         }
 
-        return $this->render('@Application/Default/simulation.html.twig', ['formProgrammer' => $formProgrammer->createView(), 'formCreationProjet' => $formCreationProjet->createView(), 'user' => $user, 'prenom' => $prenom, 'montant'=>$montant, 'budgetGlobal'=>$budgetGlobal, 'fractions' => $fractions, 'projetSelectionne' => $projetSelectionne,
-        'budgetRestant' => $budgetRestant, 'projets' => $projets, 'error' => $error]);
+        return $this->render('@Application/Default/simulation.html.twig', ['formProgrammer' => $formProgrammer->createView(), 'formCreationProjet' => $formCreationProjet->createView(), 'user' => $user, 'prenom' => $prenom, 'montant'=>$montant, 'budgetGlobal'=>$budgetGlobal, 'fractions' => $partitions, 'projetSelectionne' => $projetSelectionne,
+        'budgetRestant' => $budgetRestant, 'projets' => $projets, 'economie' => $economie, 'error' => $error, 'msg' => $msg, 'fractionsSimu' => $fractionsSimu]);
     }
 
     public function modifierMouvementAction(Request $request)

@@ -154,6 +154,23 @@ class UserController extends Controller
             $fractionBudgetRestant->setPriorite(5);
             $fractionBudgetRestant->setUtilisateur($user);
 
+            $manager->persist($fractionBudgetRestant);
+
+            try
+            {
+                $manager->flush();
+                return $this->redirectToRoute('connexion');
+            }
+            catch (PDOException $e)
+            {
+                $error = "UniqueConstraintViolationException";
+            }
+            catch (UniqueConstraintViolationException $e)
+            {
+                $error = "UniqueConstraintViolationException";
+
+            }
+
             //CREATION D'UN MOUVEMENT POUR LA PARTITION BUDGET RESTANT
             $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
             $mouvementBudgetRestant = new Mouvement();
@@ -164,7 +181,7 @@ class UserController extends Controller
             $mouvementBudgetRestant->setFraction($fractionBudgetRestant->getId());
 
             $manager->persist($user);
-            $manager->persist($fractionBudgetRestant);
+
             $manager->persist($mouvementBudgetRestant);
 
             try
