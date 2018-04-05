@@ -165,6 +165,7 @@
                             {% endfor %}
                             {{ budgetRestant }}
 
+
                         ],
                         backgroundColor: [
                             {% for partition in fractions %}
@@ -175,9 +176,9 @@
                     }],
                     labels: [
                       {% if fractions != null %}
-                      {% for partition in fractions %}
-                        "{{ partition.nom }}",
-                      {% endfor %}
+                        {% for partition in fractions %}
+                          "{{ partition.nom }}",
+                        {% endfor %}
                       {% endif %}
                       "Budget restant"
                     ]
@@ -206,14 +207,12 @@
 
             </script>
         </div>
-        {{ dump(fractions) }}
         <div class="col-sm-6">
             {% if error == "DBALException" %}
                 <div class="alert alert-danger">
                     Le montant ne peut être nul.
                 </div>
             {% endif %}
-
             <h2> Entrer un nouveau mouvement </h2>
             <!-- Formulaire de création de mouvement-->
             {{ form_start(form) }}

@@ -15,10 +15,15 @@ class FractionRepository extends \Doctrine\ORM\EntityRepository
 	{
 		$qb = $this->_em->createQueryBuilder('f');
 
+		$nom = "Budget Restant";
+
 		$qb -> select('f')
 				->from('ApplicationBundle:Fraction', 'f')
 				->where('f.utilisateur = :id')
-				->setParameter('id', $id);
+				->andWhere('f.nom not like :nom')
+				->setParameter('id', $id)
+				->setParameter('nom', $nom)
+				;
 
 		$requete = $qb->getQuery();
 
@@ -56,10 +61,21 @@ class FractionRepository extends \Doctrine\ORM\EntityRepository
 		$qb -> select('f')
 				->from('ApplicationBundle:Fraction', 'f')
 				->where('f.utilisateur = :id')
-				->andWhere('f.nom not like :nom')
+				->andWhere('f.nom like :nom')
 				->setParameter('id', $id)
 				->setParameter('nom', $nom);
-		return $qb;
+				$requete = $qb->getQuery();
+
+				try
+				{
+					$result = $requete->getSingleResult();
+				}
+				catch (\Doctrine\ORM\NoResultException $e)
+				{
+					$result = "NoResultException";
+				}
+
+				return $result;
 	}
 
 }
