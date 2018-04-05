@@ -372,10 +372,10 @@ class DefaultController extends Controller
 
         $projetCree = new Projet();
 
-        $formBuilder2 = $this->get('form.factory')->createBuilder(FormType::class, $projetCree);
+        $formBuilder2 = $this->get('form.factory')->createBuilder(FormType::class, $projetCree, ["allow_extra_fields" => true]);
 
         $formBuilder2
-            ->add('nom', TextType::class, ["allow_extra_fields" => true,'label'=>'Nom', 'attr' => ['placeholder' => '"Voyage aux Caraïbes"']])
+            ->add('nom', TextType::class, ['label'=>'Nom', 'attr' => ['placeholder' => '"Voyage aux Caraïbes"']])
             ->add('dateDebut', DateType::class, ['label' => 'Date début' , 'format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
             ->add('dateFin', DateType::class, ['label' => 'Date fin' , 'format' => 'dd-MM-yyyy', 'placeholder' => ['year' => 'Annee', 'month' => 'Mois', 'day' => 'Jour']])
             ->add('montant', MoneyType::class, ['label' => 'Montant', 'currency' => null, 'scale' => 4, 'attr'=>['placeholder' => '"400"']])
