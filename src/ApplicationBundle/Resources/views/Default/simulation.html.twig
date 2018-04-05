@@ -62,8 +62,8 @@
 
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-6">
 
+    <div class="col-sm-6">
       <h3>Visualisation</h3><br>
       <h4>Situation en cours :</h4>
 
@@ -85,16 +85,11 @@
         {% endfor %}
 
         {% for projet in projetSelectionne %}
-            {% for project in projet %}
-              <div class="progress-bar" role="progressbar" style="width:{{ projet.montant }}%; background-color:gray">
-                {{ project.nom.projet.nom }}
-              </div>
-            {% endfor %}
+          <div class="progress-bar" role="progressbar" style="width:{{ projet.nom.projet.montant }}%; background-color:gray">
+            {{ projet.nom.projet.nom }}
+          </div>
         {% endfor %}
       </div>
-    </div>
-
-    <div class="col-sm-6">
 
       <h3>Projets de dépenses</h3><br>
 
@@ -141,8 +136,16 @@
           </tbody>
         </table>
       </div>
+    </div>
 
-      </div>
+    <div class="col-sm-1"></div>
+
+    <div class="col-sm-4">
+      <h3>Créer un nouveau projet : </h3>
+      {{ form_start(formCreationProjet) }}
+      {{ form_widget(formCreationProjet) }}
+      {{ form_end(formCreationProjet) }}
+
     </div>
   </div>
 </div>

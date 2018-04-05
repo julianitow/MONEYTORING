@@ -92,7 +92,7 @@
                                 {{ mouv.type }}
                             </td>
                             <td style="text-align: center">
-                                <a class="btn btn-primary" href="#">Modifier</a>
+                                <a class="btn btn-primary" href="{{ path('modification', {'idMouvement': mouv.id}) }}">Modifier</a>
                                 <a class="btn btn-danger" href="{{ path('suppression', {'idMouvement': mouv.id}) }}">Supprimer</a>
                             </td>
                         </tr>

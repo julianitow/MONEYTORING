@@ -45,7 +45,7 @@ class MouvementRepository extends \Doctrine\ORM\EntityRepository
     $qb -> select('m')
         ->from('ApplicationBundle:Mouvement', 'm')
         ->where('m.fraction = :id')
-        ->andWhere('m.fraction.nom = :nom')
+        ->andWhere('m.nom = :nom')
         ->setParameter('id', $id)
         ->setParameter('nom', $nom);
 
@@ -53,7 +53,7 @@ class MouvementRepository extends \Doctrine\ORM\EntityRepository
 
     try
 		{
-			$result = $requete->getResult();
+			$result = $requete->getSingleResult();
 		}
 		catch (\Doctrine\ORM\NoResultException $e)
 		{

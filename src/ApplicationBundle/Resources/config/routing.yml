@@ -51,3 +51,8 @@ suppression:
     defaults: { _controller: ApplicationBundle:Default:suppression}
     requirements:
       id: '\d+'
+modification:
+    path:     /modification/{idMouvement}
+    defaults: { _controller: ApplicationBundle:Default:modification}
+    requirements:
+      id: '\d+'

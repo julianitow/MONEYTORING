@@ -7,6 +7,7 @@ namespace ApplicationBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use ApplicationBundle\Entity\Utilisateur;
 use ApplicationBundle\Entity\Fraction;
+use ApplicationBundle\Entity\Mouvement;
 use Doctrine\ORM\NoResultException;
 
 //CONTENU FORMULAIRE
@@ -87,6 +88,7 @@ class UserController extends Controller
                  $session->set('prenom', $user->getPrenom());
                  $session->set('email', $user->getEmail());
                  $session->set('budgetGlobal', $user->getBudgetGlobal());
+                 $session->set('utilisateur', $user);
 
                  return $this->redirectToRoute('application_homepage');
             }
@@ -112,6 +114,9 @@ class UserController extends Controller
         $error = null;
 
         $user = new Utilisateur();
+
+        $date = new \DateTime();
+        $date->format('\O\n Y-m-d');
 
         $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $user);
 
@@ -149,8 +154,18 @@ class UserController extends Controller
             $fractionBudgetRestant->setPriorite(5);
             $fractionBudgetRestant->setUtilisateur($user);
 
+            //CREATION D'UN MOUVEMENT POUR LA PARTITION BUDGET RESTANT
+            $repositoryMouvement = $manager->getRepository('ApplicationBundle:Mouvement');
+            $mouvementBudgetRestant = new Mouvement();
+            $mouvementBudgetRestant->setNom('Budget Restant');
+            $mouvementBudgetRestant->setMontant($fractionBudgetRestant->getMontant());
+            $mouvementBudgetRestant->setType('Sortie');
+            $mouvementBudgetRestant->setDate($date);
+            $mouvementBudgetRestant->setFraction($fractionBudgetRestant->getId());
+
             $manager->persist($user);
             $manager->persist($fractionBudgetRestant);
+            $manager->persist($mouvementBudgetRestant);
 
             try
             {
@@ -282,12 +297,12 @@ class UserController extends Controller
         $form = $formBuilder->getForm();
         $form->handleRequest($request);
 
+        $manager = $this->getDoctrine()->getManager();
+        $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
 
         if ($form->isSubmitted() && $form->isValid())
         {
           $user = $form->getData();
-          $manager = $this->getDoctrine()->getManager();
-          $repositoryUsers = $manager->getRepository('ApplicationBundle:Utilisateur');
 
           $password = $user->getMotDePasseClair();
 
@@ -297,6 +312,37 @@ class UserController extends Controller
 
           $utilisateur = $repositoryUsers->findOneByEmail($email);
           $utilisateur->setMotDePasse($motDePasse);
+
+            try
+            {
+                $manager->flush();
+                return $this->redirectToRoute('connexion');
+            }
+            catch (PDOException $e)
+            {
+                $error = "UniqueConstraintViolationException";
+            }
+            catch (UniqueConstraintViolationException $e)
+            {
+                $error = "UniqueConstraintViolationException";
+
+            }
+
+
+        }
+
+        $formBuilder2 = $this->get('form.factory')->createBuilder(FormType::class, $user);
+        $formBuilder2
+              ->add('email', EmailType::class, ['label'=> "Nouvelle adresse email : ", 'attr' => ['placeholder'=> "Veuillez saisir votre adresse e-mail"]])
+              ->add('Changer adresse email', SubmitType::class, ['attr' => ['class'=> 'btn btn-primary']]);
+        $formChangementMail = $formBuilder2->getForm();
+        $formChangementMail->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid())
+        {
+          $user = $form->getData();
+
+          $utilisateur = $repositoryUsers->findOneById($id);
 
           try
           {
@@ -312,8 +358,10 @@ class UserController extends Controller
               $error = "UniqueConstraintViolationException";
 
           }
+
+
         }
 
-        return $this->render('@Application/User/parametresUtilisateur.html.twig', ['form'=> $form->createView(), 'prenom' => $prenom, 'error'=> $error, 'user'=>$utilisateur]);
+        return $this->render('@Application/User/parametresUtilisateur.html.twig', ['form'=> $form->createView(), 'formChangementMail' => $formChangementMail->createView(),'prenom' => $prenom, 'error'=> $error, 'user'=>$utilisateur]);
     }
 }

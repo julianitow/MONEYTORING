@@ -1,7 +1,7 @@
 {% extends '@Application/Default/index.html.twig' %}
 
 {% block title %}
-    <title>Moneytoring - Paramètres Utilisateur</title>
+    <title>Moneytoring - Modification</title>
 {% endblock %}
 
 {% block link %}
@@ -24,7 +24,7 @@
                 <span class="nav-link-text">Simulateur</span>
             </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
+        <li class="nav-item active" data-toggle="tooltip" data-placement="right" title="Modifier mouvement">
             <a class="nav-link" href="{{ path('modifierMouvement') }}">
                 <i class="fa fa-fw fa-table"></i>
                 <span class="nav-link-text">Modifier mouvement</span>
@@ -32,60 +32,21 @@
         </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Aide">
             <a class="nav-link" href="{{ path('aide') }}">
-                <i class="fa fa-fw fa-coffee"></i>
+                <i class="fa fa-fw fa-table"></i>
                 <span class="nav-link-text">Aide</span>
             </a>
         </li>
     </ul>
 {% endblock %}
 
-{% block link2 %}
-    <ul class="navbar-nav ml-auto">
-        <li class="nav-item">
-            <a class="nav-link active" href="{{ path('parametres') }}">
-                <i class="fa fa-fw fa-bookmark"></i><b>Paramètres utilisateur</b><br>
-            </a>
-            <a class="nav-link" href="{{ path('deconnexion') }}">
-                <i class="fa fa-fw fa-sign-out"></i>Déconnexion
-            </a>
-        </li>
-    </ul>
-{% endblock %}
-
 {% block body %}
-
-<style>
-  .form-control-label
-  {
-    margin-left: 50px;
-  }
-  .form-control{
-      margin-left:50px;
-  }
-  h3 {
-    margin-top: 75px;
-    margin-left: 50px;
-  }
-  .btn
-  {
-    margin-left: 50px;
-  }
-  .alert
-  {
-    margin-top: 30px;
-  }
-</style>
-<div class="col-lg-5">
-  <h3>Changer mot de passe : </h3><br>
-      {{ form_start(form) }}
-      {{ form_widget(form) }}
-      {{ form_end(form) }}
-</div>
-<div class="col-lg-5">
-  <h3>Changer adresse mail :</h3><br>
-      {{ form_start(formChangementMail) }}
-      {{ form_widget(formChangementMail) }}
-      {{ form_end(formChangementMail) }}
+<div class="container-fluid"><br>
+  <div class="col-lg-7">
+    <h3>Modifier Mouvement : </h3>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_end(form) }}
+  </div>
 </div>
 
 {% endblock %}
