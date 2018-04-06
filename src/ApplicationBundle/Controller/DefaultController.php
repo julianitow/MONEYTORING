@@ -255,13 +255,15 @@ class DefaultController extends Controller
         $prenom = $session->get('prenom');
         $montant = $session->get('montant');
         $budgetGlobal = $session->get('budgetGlobal');
-        $budgetRestant = $session->get('budgetRestant');
+        $budgetRestant = $session->get('BudgetRestant');
+        $budgetRestantSimu = null;
         $montant = $session->get('montant');
         $partitions = $session->get('fractions');
 
         if (!isset($economie))
         {
-          $economie[0] = "Pas de projet selectionné donc 0 ";
+          //$economie[0] = "Pas de projet selectionné donc 0 ";
+          $economie = null;
         }
 
         //RECUPERATION DES FRACTIONS:
@@ -292,6 +294,8 @@ class DefaultController extends Controller
           $projetSelectionne = $formProgrammer->getData();
         }
 
+        $resteBudget = null;
+
         //APRES ISNCRIPTION VERIFICATION DE L'EXISTANCE DE PROJET(S)
         if (!(isset($projetSelectionne)))
         {
@@ -317,56 +321,96 @@ class DefaultController extends Controller
          $msg = null;
          if (isset($projetSelectionne))
          {
-           if ($projetSelectionne->getMontant() > $budgetRestant)
+           if ($projetSelectionne->getnom()->getMontant() > $budgetRestant)
            {
-             $pourcentage = ($projetSelectionne->getMontant()/$budgetRestant)*$nbPartitionModifiable;
-
              $msg = "MontantTooHigh";
-             //$economisable =
            }
            else {
              $msg = "succeed project";
            }
-
+           $budgetRestantSimu = null;
+           $resteBudget = $budgetRestant - $projetSelectionne->getNom()->getMontant();
            foreach($fractionsSimu as $fractionSimu)
            {
-             if ($fractionSimu->getPriorite() < 2)
-             {
-               $montantFractionBase = $fractionSimu->getMontant();
-               $montantFraction = $montantFractionBase;
-               //CALCUL DU POURCENTAGE DE REDUCTION
-               $montantFraction -= ($montantFractionBase/100)*20;
-               $fractionSimu->setMontant($montantFraction);
-               $montantEco = $montantFractionBase - $montantFraction;
-               $montantEcoString = ( string ) $montantEco;
+            // calculer coût du projet - budget RESTANT
+            // tu fais le calcul si le résultat est positif
+            // le calcul est basé sur le résultat du calcul vu que c'est la somme manquante pour le projets
+            // l'objectif étant d'arriver à diminuer les partitions pour que le coût restant (celui qui est calculé) soit à zéro
+            if ($projetSelectionne->getNom()->getMontant() > $budgetRestant)
+            {
+              while ($resteBudget < 0)
+              {
+                if ($fractionSimu->getPriorite() < 2)
+                {
+                  $montantFractionBase = $fractionSimu->getMontant();
+                  $montantFraction = $montantFractionBase;
+                  //CALCUL DU POURCENTAGE DE REDUCTION
+                  $pourcentageReduction = ($montantFractionBase/100)*10;
+                  $montantFraction -= ($montantFractionBase/100)*10;
+                  $resteBudget += $pourcentageReduction;
+                  $fractionSimu->setMontant($montantFraction);
+                  $montantEco = $montantFractionBase - $montantFraction;
+                  $budgetRestantSimu = $budgetRestant - $projetSelectionne->getNom()->getMontant();
+                  $montantEcoString = ( string ) $montantEco;
 
-               $economie[$fractionSimu->getNom()] =  $fractionSimu->getNom() . " " . " : " . $montantEcoString;
-             }
-             elseif ($fractionSimu->getPriorite() < 4)
-             {
-               $montantFractionBase = $fractionSimu->getMontant();
-               $montantFraction = $montantFractionBase;
-               //CALCUL DU POURCENTAGE DE REDUCTION
-               $montantFraction - ($montantFractionBase/100)*40;
-               $fractionSimu->setMontant($montantFraction);
-               $montantEco = $montantFractionBase - $montantFraction;
-               $montantEcoString = ( string ) $montantEco;
+                  $economie[$fractionSimu->getNom()] =  $fractionSimu->getNom() . " " . " : " . $montantEcoString;
 
-               $economie[$fractionSimu->getNom()] =  '<b>' . $fractionSimu->getNom() . '</b>' . " " . " : " . $montantEcoString;
-             }
-             else
-             {
-               $montantFractionBase = $fractionSimu->getMontant();
-               $montantFraction = $montantFractionBase;
-               //CALCUL DU POURCENTAGE DE REDUCTION
-               $montantFraction -= ($montantFractionBase/100)*60;
-               $fractionSimu->setMontant($montantFraction);
+                  if ($budgetRestantSimu + $montantEco >= 0)
+                  {
+                    $budgetRestantSimu = 0;
+                    $resteBudget = 1;
+                  }
+                }
+                elseif ($fractionSimu->getPriorite() < 4)
+                {
+                  $montantFractionBase = $fractionSimu->getMontant();
+                  $montantFraction = $montantFractionBase;
+                  //CALCUL DU POURCENTAGE DE REDUCTION
+                  $pourcentageReduction = ($montantFractionBase/100)*15;
+                  $montantFraction - ($montantFractionBase/100)*15;
+                  $resteBudget += $pourcentageReduction;
+                  $fractionSimu->setMontant($montantFraction);
+                  $budgetRestantSimu = $budgetRestant - $projetSelectionne->getNom()->getMontant();
+                  $montantEco = $montantFractionBase - $montantFraction;
+                  $montantEcoStringSimu = ( string ) $montantEco;
 
-               $montantEco = $montantFractionBase - $montantFraction;
-               $montantEcoString = ( string ) $montantEco;
+                  $economie[$fractionSimu->getNom()] = $fractionSimu->getNom() . " " . " : " . $montantEcoString;
 
-               $economie[$fractionSimu->getNom()] =  $fractionSimu->getNom() . " " . " : " . $montantEcoString;
-             }
+                  if ($budgetRestantSimu + $montantEco >= 0)
+                  {
+                    $budgetRestantSimu = 0;
+                    $resteBudget = 1;
+                  }
+                }
+                else
+                {
+                  $montantFractionBase = $fractionSimu->getMontant();
+                  $montantFraction = $montantFractionBase;
+                  //CALCUL DU POURCENTAGE DE REDUCTION
+                  $pourcentageReduction = ($montantFractionBase/100)*20;
+                  $montantFraction -= ($montantFractionBase/100)*20;
+                  $resteBudget += $pourcentageReduction;
+                  $fractionSimu->setMontant($montantFraction);
+
+                  $montantEco = $montantFractionBase - $montantFraction;
+                  $budgetRestantSimu = $budgetRestant - $projetSelectionne->getNom()->getMontant();
+                  $montantEcoString = ( string ) $montantEco;
+
+                  $economie[$fractionSimu->getNom()] =  $fractionSimu->getNom() . " " . " : " . $montantEcoString;
+
+                  if ($budgetRestantSimu + $montantEco >= 0)
+                  {
+                    $budgetRestantSimu = 0;
+                    $resteBudget = 1;
+                  }
+                }
+                break;
+              }
+            }
+            else
+            {
+              $budgetRestantSimu = $budgetRestant - $projetSelectionne->getNom()->getMontant();
+            }
            }
          }
 
@@ -407,7 +451,7 @@ class DefaultController extends Controller
         }
 
         return $this->render('@Application/Default/simulation.html.twig', ['formProgrammer' => $formProgrammer->createView(), 'formCreationProjet' => $formCreationProjet->createView(), 'user' => $user, 'prenom' => $prenom, 'montant'=>$montant, 'budgetGlobal'=>$budgetGlobal, 'fractions' => $partitions, 'projetSelectionne' => $projetSelectionne,
-        'budgetRestant' => $budgetRestant, 'projets' => $projets, 'economie' => $economie, 'error' => $error, 'msg' => $msg, 'fractionsSimu' => $fractionsSimu]);
+        'budgetRestant' => $budgetRestant, 'projets' => $projets, 'economie' => $economie, 'resteBudget' => $resteBudget, 'error' => $error, 'msg' => $msg, 'fractionsSimu' => $fractionsSimu, 'budgetRestantSimu' => $budgetRestantSimu]);
     }
 
     public function modifierMouvementAction(Request $request)

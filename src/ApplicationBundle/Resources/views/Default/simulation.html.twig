@@ -66,11 +66,14 @@
       <h3>Visualisation</h3><br>
       {% if msg == "MontantTooHigh" %}
         <div class="alert alert-danger">
-          Budget Depasse
+          Projet non réalisable pour le moment !
         </div>
+      {% elseif msg == "succeed project"%}
+      <div class="alert alert-success">
+        Projet réalisable !
+      </div>
       {% endif %}
       <h4>Situation en cours :</h4>
-
       <div class="progress" id="progress1">
         {% for partition in fractions %}
           <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
@@ -78,7 +81,7 @@
           </div>
         {% endfor %}
         <div class="progress-bar" role="progressbar" style="width:{{ budgetRestant }}%; background-color:gray">
-          "Restant" : {{ budgetRestant }}€
+          Restant : {{ budgetRestant }}€
         </div>
       </div>
       <h4 id="titreAvecProjet" style="margin-top: 20px">Situation avec projet :</h4>
@@ -86,17 +89,17 @@
       <div class="progress" id="progress2" style="margin-top: 20px">
         {% for partition in fractionsSimu %}
           <div class="progress-bar" role="progressbar" style="width:{{ partition.montant }}%; background-color:{{ partition.couleur }}">
-            {{ partition.nom }} - {{ partition.montant }}€
+            {{ partition.nom }} : {{ partition.montant }}€
           </div>
         {% endfor %}
 
             {% if projetSelectionne is not null %}
               <div class="progress-bar" role="progressbar" style="width:{{ projetSelectionne.nom.montant }}%; background-color:green">
-                {{ projetSelectionne.nom.nom }} - {{ projetSelectionne.nom.montant }}€
+                {{ projetSelectionne.nom.nom }} : {{ projetSelectionne.nom.montant }}€
               </div>
             {% endif %}
             <div class="progress-bar" role="progressbar" style="width:{{ budgetRestant }}%; background-color:gray">
-              "Restant" : {{ budgetRestant }}€
+              Restant : {{ budgetRestantSimu }}€
             </div>
       </div>
       <h3> Montant à économiser : </h3>
